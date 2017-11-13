@@ -8,8 +8,6 @@ var Notebook = sequelize.import('../models/notebook');
 var Section = sequelize.import('../models/section');
 var Page = sequelize.import('../models/page');
 
-var section = [];
-
 
 /* GET home page. */
 // router.get('/', function(req, res, next) {
@@ -58,35 +56,28 @@ router.get('/showSection/:notebookID', function (request, response,next) {
         }
     }).then(function(message){
         var sectionResult = JSON.stringify(message);
-        response.cookie('section', JSON.parse(sectionResult));
+        console.log(sectionResult)
         response.render('notebook', { title: 'My Note', user:request.cookies.user,note:request.cookies.notebook,section:JSON.parse(sectionResult)});
+
     });
 });
 
-// router.route('/login')
-//     .get(function (req,res,next) {
-//     res.render('login', {title: '用户登录界面a a'});
-// })
-//     .post(function (request, response,next) {
-//         var user = {
-//             username: 'DC',
-//             password:'admin'
-//         };
-//         console.log("======");
-//
-//         console.log(request.body);
-//
-//         console.log("======");
-//
-//         if(request.body.username === user.username && request.body.password === user.password) {
-//             response.redirect('/')
-//         }
-//         response.redirect('/login');
-//     });
 
-// router.get('/login',function (req,res,next) {
-//     res.render('login', {title: '用户登录界面heihei'});
-// })
+router.get('/showPage/:sectionID', function (request, response,next) {
+
+    var sectionID = request.params.sectionID;
+
+    Page.findAll({
+        where:{
+            sectionID:sectionID
+        }
+    }).then(function(message){
+        var pageResult = JSON.stringify(message);
+        console.log(pageResult)
+        response.render('content', { title: 'My Note', user:request.cookies.user,note:request.cookies.notebook,section:JSON.parse(sectionResult)});
+
+    });
+});
 
 
 module.exports = router;

@@ -8,8 +8,6 @@ var Notebook = sequelize.import('../models/notebook');
 var Section = sequelize.import('../models/section');
 var Page = sequelize.import('../models/page');
 
-var section = [];
-
 
 /* GET home page. */
 // router.get('/', function(req, res, next) {
@@ -58,8 +56,10 @@ router.get('/showSection/:notebookID', function (request, response,next) {
         }
     }).then(function(message){
         var sectionResult = JSON.stringify(message);
-        response.cookie('section', JSON.parse(sectionResult));
+
+        console.log(sectionResult)
         response.render('notebook', { title: 'My Note', user:request.cookies.user,note:request.cookies.notebook,section:JSON.parse(sectionResult)});
+
     });
 });
 
