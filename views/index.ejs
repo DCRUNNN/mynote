@@ -19,6 +19,10 @@
   <link href="/stylesheets/style.css" rel="stylesheet">
   <link href="/stylesheets/style-responsive.css" rel="stylesheet" />
   <link rel="stylesheet" href="/stylesheets/owl.carousel.css" type="text/css">
+  <!--图标样式-->
+  <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css"/>
+
+
 
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
@@ -124,25 +128,31 @@
       <!-- sidebar menu start-->
       <ul class="sidebar-menu" id="nav-accordion">
 
-
         <li class="sub-menu">
           <a class="active" href="/" >
             <i class="fa fa-book" aria-hidden="true"></i>
             <span>我的笔记本</span>
           </a>
 
-          <ul class="sub" id="notebook_title">
-            <%note.forEach(function(note){%>
-            <li><a href="/index/showSection/<%=note.notebookID%>"><%=note.title%></a></li>
-            <%})%>
-            <!--<li><a href="/">大学</a></li>-->
-            <!--<li><a href="/">阅读</a></li>-->
-            <!--<li><a href="/">生活</a></li>-->
-          </ul>
+           <ul class="sub" id="notebook_ul">
+              <%note.forEach(function(note2){%>
+              <li class="sub-menu" id="">
+
+                <!--"/index/showSection/<%=note2.notebookID%>"-->
+              <a href='#' onclick="setSection(event)">
+                <i class="fa fa-book" aria-hidden="true"></i>
+                <span id="<%=note2.notebookID%>"><%=note2.title%></span>
+              </a>
+
+              </li>
+              <%})%>
+
+            </ul>
+
         </li>
 
         <li>
-          <a href="/">
+          <a href="#" onclick="handle()">
             <i class="fa fa-envelope" aria-hidden="true"></i>
             <span>好友圈</span>
             <span class="label label-danger pull-right mail-info">2</span>
@@ -150,36 +160,36 @@
         </li>
 
         <li>
-          <a href="/">
+          <a>
             <i class="fa fa-cog" aria-hidden="true"></i>
-            <span>系统设置</span>
+            <span >系统设置</span>
             <span class="label label-danger pull-right mail-info">2</span>
           </a>
         </li>
 
         <!--multi level menu start-->
-        <li class="sub-menu">
-          <a href="javascript:;" >
-            <i class="fa fa-sitemap" aria-hidden="true"></i>
-            <span>Multi level Menu</span>
-          </a>
-          <ul class="sub">
-            <li><a  href="javascript:;">Menu Item 1</a></li>
-            <li class="sub-menu">
-              <a  href="/">Menu Item 2</a>
-              <ul class="sub">
-                <li><a  href="javascript:;">Menu Item 2.1</a></li>
-                <li class="sub-menu">
-                  <a  href="javascript:;">Menu Item 3</a>
-                  <ul class="sub">
-                    <li><a  href="javascript:;">Menu Item 3.1</a></li>
-                    <li><a  href="javascript:;">Menu Item 3.2</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
+        <!--<li class="sub-menu">-->
+          <!--<a href="javascript:;" >-->
+            <!--<i class="fa fa-sitemap" aria-hidden="true"></i>-->
+            <!--<span>Multi level Menu</span>-->
+          <!--</a>-->
+          <!--<ul class="sub">-->
+            <!--<li><a  href="/index/showSection/1">Menu Item 1</a></li>-->
+            <!--<li class="sub-menu">-->
+              <!--<a  href="/index/showSection/1">Menu Item 2</a>-->
+              <!--<ul class="sub">-->
+                <!--<li><a  href="javascript:;">Menu Item 2.1</a></li>-->
+                <!--<li class="sub-menu">-->
+                  <!--<a  href="javascript:;">Menu Item 3</a>-->
+                  <!--<ul class="sub">-->
+                    <!--<li><a  href="javascript:;">Menu Item 3.1</a></li>-->
+                    <!--<li><a  href="javascript:;">Menu Item 3.2</a></li>-->
+                  <!--</ul>-->
+                <!--</li>-->
+              <!--</ul>-->
+            <!--</li>-->
+          <!--</ul>-->
+        <!--</li>-->
 
       </ul>
     </div>
@@ -187,7 +197,7 @@
   <!--sidebar end-->
 
   <!--main content start-->
-  <section id="main-content">
+  <section id="main-content" >
     <section class="wrapper">
       <!--state overview start-->
       <div class="row state-overview">
@@ -195,6 +205,154 @@
       </div>
       <!--state overview end-->
 
+      <div class="row"  >
+        <div class="col-lg-12">
+          <!--timeline start-->
+          <section class="panel">
+            <div class="panel-body">
+
+              <div class="mail-box">
+                <!--mail-box-->
+
+                <aside class="sm-side">
+                  <div class="user-head">
+                    <a href="javascript:;" class="inbox-avatar">
+                      <img src="/images/avatar-mini.jpg" class="img-responsive" alt="">
+                    </a>
+                    <div class="user-name">
+                      <h5 align="center"><a href="#"><%= user.username %></a></h5>
+                      <span><a href="#"><%= user.email %></a></span>
+                    </div>
+                    <a href="javascript:;" class="mail-dropdown pull-right">
+                      <i class="fa fa-chevron-down"></i>
+                    </a>
+                  </div>
+
+                  <div>
+
+                    <div class="inbox-body">
+                      <a class="btn btn-compose" data-toggle="modal" href="#myModal">
+                        Add Section
+                      </a>
+                      <!-- Modal -->
+                      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                              <h4 class="modal-title">Compose</h4>
+                            </div>
+                            <div class="modal-body">
+                              <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                  <label  class="col-lg-2 control-label">To</label>
+                                  <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="inputEmail1" placeholder="">
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label  class="col-lg-2 control-label">Cc / Bcc</label>
+                                  <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="cc" placeholder="">
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label class="col-lg-2 control-label">Subject</label>
+                                  <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="inputPassword1" placeholder="">
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label class="col-lg-2 control-label">Message</label>
+                                  <div class="col-lg-10">
+                                    <textarea name="" id="" class="form-control" cols="30" rows="10"></textarea>
+                                  </div>
+                                </div>
+
+                                <div class="form-group">
+                                  <div class="col-lg-offset-2 col-lg-10">
+                                                      <span class="btn green fileinput-button">
+                                                        <i class="icon-plus icon-white"></i>
+                                                        <span>Attachment</span>
+                                                        <input type="file" multiple=""  name="files[]">
+                                                      </span>
+                                    <button type="submit" class="btn btn-send">Send</button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                      </div><!-- /.modal -->
+
+                      <div id="jstree">
+                        <!-- in this example the tree is populated from inline HTML -->
+                        <!--<ul>-->
+                          <!--<li>Root node 1-->
+                            <!--<ul>-->
+                              <!--<li id="child_node_1">Child node 1</li>-->
+                              <!--<li>Child node 2</li>-->
+                            <!--</ul>-->
+                          <!--</li>-->
+                          <!--<li>Root node 2</li>-->
+                        <!--</ul>-->
+                      </div>
+
+                      <!--<ul class="inbox-nav inbox-divider">-->
+                        <!--<%sect.forEach(function(section){%>-->
+                        <!--<li class="sub-menu">-->
+                          <!--<a href="/index/showPage/<%=section.sectionID%>"> <i class="fa fa-book"> &nbsp;&nbsp;<%=section.title%></i></a>  </li>-->
+
+                          <!--&lt;!&ndash;<ul class="sub">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<li><a href="#">666</a></li>&ndash;&gt;-->
+                          <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+                        <!--</li>-->
+                        <!--<%})%>-->
+                      <!--</ul>-->
+                    </div>
+
+
+
+                </aside>
+
+                <aside class="lg-side">
+                  <div class="inbox-head">
+                    <h3>Page</h3>
+                    <p id="status"></p>
+                    <button onclick='Req_ajax("client get", "get")'>点我</button>
+                    <form class="pull-right position" action="#">
+                      <div class="input-append">
+                        <input type="text"  placeholder="Search Note" class="sr-input">
+                        <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="inbox-body">
+                    <!--<img src="/images/gallery/1.jpg">-->
+                    <div class="row">
+                      <div class="well" style="color:cadetblue;font-size:14px;" id="myArticleContent">
+                        <%=page.content%>
+                        <!--<p style="color:cadetblue;font-size:14px;" id="myArticleContent">{{one_content}}</p>-->
+                        <!--<p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>-->
+                        <!--<ul class="list-inline"><li><a href="#">2 Days Ago</a></li><li><a href="#"><i class="glyphicon glyphicon-comment"></i> 4 Comments</a></li><li><a href="#"><i class="glyphicon glyphicon-share"></i> 34 Shares</a></li></ul>-->
+                      </div>
+
+                    </div>
+                  </div>
+                </aside>
+              </div>
+
+
+              <div>
+
+              </div>
+
+              <div class="clearfix">&nbsp;</div>
+            </div>
+          </section>
+          <!--timeline end-->
+        </div>
+      </div>
 
       <div>
       </div>
@@ -235,6 +393,11 @@
     <!--});-->
 <!--</script>-->
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+
+<script src="/javascripts/jstree.js"></script>
+<script src="/javascripts/jstree.min.js"></script>
+
 <script>
 
     //owl carousel
@@ -256,6 +419,107 @@
     });
 
 </script>
+
+<script>
+    var OL_Action_Root = "http://127.0.0.1:3000/index";
+    var xmlHttp = null;
+    function Req_ajax(info, type)
+    {
+        $.ajax({
+            data: {info:info, type:type},
+            url: OL_Action_Root+"/showSection/1",
+            dataType: 'json',
+            cache: false,
+            timeout: 5000,
+            type:type,    // 如果要使用GET方式，则将此处改为'get'
+            success: function(data){
+                var res = data;
+                console.log(data);
+                if(res.message == 'success')
+                {
+                    document.getElementById("status").innerHTML += "<p style='color:green; font-weight:bold;'>服务器返回信息: " + res.data + "</p>";
+                }
+                else
+                {
+                    document.getElementById("status").innerHTML += "<p style='color:#2289DB; font-weight:bold;'>获取服务器信息失败！ " + res.data + "</p>";
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                document.getElementById("texta").innerHTML=errorThrown;
+
+
+                document.getElementById("status").innerHTML += "<p style='color:#C00000; font-weight:bold;'>连接不到服务器，请检查网络！</p>";
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function setSection(event) {
+        // 6 create an instance when the DOM is ready
+//        $('#jstree').jstree();
+        alert("执行了！");
+
+        $("#jstree").jstree({
+            "core" : {
+                "themes" : {
+                    "responsive": false
+                },
+                // so that create works
+                "check_callback" : true,
+                'url': "http://127.0.0.1/3000/index/ajax"+"/req_ajax",
+                'data' : function (obj, callback) {
+                    var jsonstr="[]";
+                    var jsonarray = eval('('+jsonstr+')');
+                    $.ajax({
+                        data: {info:'get请求', type:'get'},
+                        url: "http://127.0.0.1/3000/index/ajax/"+"/req_ajax",
+                        dataType: 'json',
+                        cache: false,
+                        timeout: 5000,
+                        type:'get',    // 如果要使用GET方式，则将此处改为'get'
+                        success: function(data){
+                            var res = data;
+                            if(res[0] == 'success')
+                            {
+                                document.getElementById("status").innerHTML += "<p style='color:green; font-weight:bold;'>服务器返回信息: " + res[1] + "</p>";
+                            }
+                            else
+                            {
+                                document.getElementById("status").innerHTML += "<p style='color:#2289DB; font-weight:bold;'>获取服务器信息失败！ " + res[1] + "</p>";
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            document.getElementById("texta").innerHTML=errorThrown;
+
+
+                            document.getElementById("status").innerHTML += "<p style='color:#C00000; font-weight:bold;'>连接不到服务器，请检查网络！</p>";
+                        }
+                    });
+                    callback.call(this, jsonarray);
+                }
+            },
+            "types" : {
+                "default" : {
+                    "icon" : "glyphicon glyphicon-flash"
+                },
+                "file" : {
+                    "icon" : "glyphicon glyphicon-ok"
+                }
+            },
+            "state" : { "key" : "demo2" },
+            "plugins" : [ "dnd", "state", "types","checkbox","wholerow" ]
+        });
+
+        // 7 bind to events triggered on the tree
+        $('#jstree').on("changed.jstree", function (e, data) {
+            alert(data.instance.get_node(data.selected).text);      //输出当前选中的区域的名称
+        });
+    }
+</script>
+
+
 
 </body>
 </html>

@@ -37,7 +37,7 @@ app.use('/index', routes);
 app.use('/signUp', signUp);
 app.use('/notebook', notebook);
 app.use('/content', content);
-
+app.use('/test', content);
 // app.use('home', routes);
 
 // catch 404 and forward to error handler

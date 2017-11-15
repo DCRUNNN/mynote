@@ -10,9 +10,9 @@ var Page = sequelize.import('../models/page');
 
 // var User = require('../models/user');
 
-router.get('/',function (req,res,next) {
+router.get('/', function (req, res, next) {
     res.render('login',{title: '用户登录界面哦！'});
-})
+});
 
 
 router.get('/login',function (req,res,next) {
@@ -52,12 +52,11 @@ router.post('/index',function (request, response,next) {
                 }
             }).then(function(message){
                 var notebookResult=JSON.stringify(message);
-                console.log(notebookResult)
+                // console.log(notebookResult)
 
                 response.cookie('user', user);
                 response.cookie('notebook', JSON.parse(notebookResult));
-
-                response.render('index', { title: 'My Note', user: user,note:JSON.parse(notebookResult),section:[] });
+                response.render('index', { title: 'My Note', user: user, note:JSON.parse(notebookResult),sect:[],page:[] });
             });
 
             // response.redirect('/',{title:'My Note', user: user,note:note });

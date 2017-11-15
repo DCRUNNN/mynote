@@ -15,17 +15,19 @@ var Page = sequelize.import('../models/page');
 // });
 //
 router.get('/', function (request, response,next) {
-    if (request.body.username == undefined ||request.body.username == '') {
-        response.render('404',{message:'请输入用户名和密码'});
-        return;
-    }
+    // if (request.body.username == undefined ||request.body.username == '') {
+    //     response.render('404',{message:'请输入用户名和密码'});
+    //     return;
+    // }
+    // response.render('test');
+
 });
 
 router.get('/index', function (request, response,next) {
 
     if (request.body.username == undefined ||request.body.username == '') {
         response.render('404',{message:'请输入用户名和密码'});
-        response.redirect('/')
+        // response.redirect('/')
         return;
     }
 
