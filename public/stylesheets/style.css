@@ -179,6 +179,10 @@ a, a:hover, a:focus {
     padding-left: 32px;
 }
 
+#sidebar .divider {
+    height:1px;margin:3px 0;overflow:hidden;background-color:#e5e5e5;
+}
+
 #sidebar .sub-menu > .sub li:last-child {
     padding-bottom: 10px;
 }

@@ -5,7 +5,6 @@ var { sequelize } = require("../config/db");
 
 var User = sequelize.import("../models/user");
 var Notebook = sequelize.import('../models/notebook');
-var Section = sequelize.import('../models/section');
 var Page = sequelize.import('../models/page');
 
 

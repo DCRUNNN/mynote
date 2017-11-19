@@ -12,7 +12,6 @@ var users = require('./routes/users');
 var login = require('./routes/login');
 var signUp = require('./routes/signUp');
 var notebook = require('./routes/notebook');
-var content = require('./routes/content');
 
 var databaseHelper = require('./routes/database');
 var app = express();
@@ -34,10 +33,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', login);
 app.use('/users', users);
 app.use('/index', routes);
-app.use('/signUp', signUp);
+app.use('/signUp', login);
 app.use('/notebook', notebook);
-app.use('/content', content);
-app.use('/test', content);
+
 // app.use('home', routes);
 
 // catch 404 and forward to error handler

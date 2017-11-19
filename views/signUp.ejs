@@ -6,9 +6,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
 </head>
-<body>
+<body class="login-body" style="background-image: url('/images/back3.jpg');background-size: 100%">
 <div class="container">
-    <form class="col-sm-offset-4 col-sm-4 form-horizontal" id="form" role="form" method="post" action="/signUp/mySignUp">
+    <form class="col-sm-offset-4 col-sm-4 form-horizontal" style="top: 130px" id="form" role="form" method="post" action="/signUp">
         <fieldset>
             <legend><%= title %></legend>
             <div class="form-group">
@@ -21,7 +21,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="password">密码</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="password" name="password" placeholder="密码" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="密码" required>
                 </div>
             </div>
 
@@ -40,11 +40,11 @@
             </div>
 
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                    <button type="submit" class="btn btn-primary">登录</button>
+                <div class="col-sm-12">
+                    <button type="submit" style="opacity: 0.5;" class="btn btn-default btn-lg btn-block">注册</button>
+                    <a href="/login"><button type="button" style="opacity: 0.5;" class="btn btn-default btn-lg btn-block">返回</button></a>
                 </div>
             </div>
-
         </fieldset>
     </form>
 </div>
@@ -56,7 +56,7 @@
     <!--}-->
 <!--</script>-->
 
-<script src="/javascripts/jquery-1.10.2.min.js"></script>
+<script src="/javascripts/jquery-3.2.1.min.js"></script>
 <script src="/javascripts/bootstrap.min.js"></script>
 
 </body>

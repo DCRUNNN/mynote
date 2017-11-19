@@ -5,7 +5,6 @@ var { sequelize } = require("../config/db");
 
 var User = sequelize.import("../models/user");
 var Notebook = sequelize.import('../models/notebook');
-var Section = sequelize.import('../models/section');
 var Page = sequelize.import('../models/page');
 
 // var User = require('../models/user');
@@ -14,9 +13,14 @@ router.get('/', function (req, res, next) {
     res.render('login',{title: '用户登录界面哦！'});
 });
 
-
 router.get('/login',function (req,res,next) {
     res.redirect('/')
+})
+
+router.get('/signUp',function (req,res,next) {
+    console.log("注册！");
+    res.render('signUp',{title: '用户注册界面哦！'});
+
 })
 
 router.post('/index',function (request, response,next) {
@@ -40,8 +44,6 @@ router.post('/index',function (request, response,next) {
         var data = JSON.parse(obj);
         // console.log(data);
         // var realPassword = message.dataValues.password;
-
-
         var realPassword = data.password;
         if(realPassword===password){
             var user = data;
@@ -56,7 +58,8 @@ router.post('/index',function (request, response,next) {
 
                 response.cookie('user', user);
                 response.cookie('notebook', JSON.parse(notebookResult));
-                response.render('index', { title: 'My Note', user: user, note:JSON.parse(notebookResult),sect:[],page:[] });
+                response.render('index', { title: 'My Note', user: user, note:JSON.parse(notebookResult),pageMenu:[],pageContent:[] });
+
             });
 
             // response.redirect('/',{title:'My Note', user: user,note:note });
@@ -68,5 +71,36 @@ router.post('/index',function (request, response,next) {
     });
 
     });
+
+router.post('/signUp',function (request, response,next) {
+    // var username = request.query.username;
+
+    User.findAll({
+        where: {
+            username: request.body.username
+        }
+    }).then(function (message) {
+        var obj=JSON.stringify(message);
+        var data = JSON.parse(obj);
+        var check=data[0]==undefined;
+        if(check==false){
+            response.render('404', {message: '该用户名已存在！'});
+        }else{
+            var user = {
+                username: request.body.username,
+                password: request.body.password,
+                email:request.body.email,
+                phoneNumber:request.body.phoneNumber,
+                privilege:0
+            };
+
+            User.create(user).then(function(msg){
+                response.redirect('/login');
+            });
+        }
+    })
+
+
+});
 
 module.exports = router;

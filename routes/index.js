@@ -7,10 +7,7 @@ var { sequelize } = require("../config/db");
 
 var User = sequelize.import("../models/user");
 var Notebook = sequelize.import('../models/notebook');
-var Section = sequelize.import('../models/section');
 var Page = sequelize.import('../models/page');
-
-var section = [{title:'大学'},{title:'阅读'},{title:'生活'}];
 
 var page = [];
 
@@ -25,97 +22,190 @@ router.get('/ajax', function(req, res, next) {
     res.render('ajax');
 });
 
-router.post('/req_ajax', urlencodedParser, function(req, res, next){
-    /* req.body对象
-       包含POST请求参数。
-       这样命名是因为POST请求参数在REQUEST正文中传递，而不是像查询字符串在URL中传递。
-       要使req.body可用，可使用中间件body-parser
-    */
-    var type = req.body.type;
-    var info = req.body.info;
-    console.log("服务器收到一个Ajax ["+type+"] 请求，信息为："+info);
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(['success', "服务器收到一个Ajax ["+type+"] 请求，信息为："+info]);
-});
-
-router.get('/req_ajax', function(req, res, next){
-    /* req.query对象
-       通常称为GET请求参数。
-       包含以键值对存放的查询字符串参数
-       req.query不需要任何中间件即可使用
-    */
-    var type = req.query.type;
-    var info = req.query.info;
-    console.log("服务器收到一个Ajax ["+type+"] 请求，信息为："+info);
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(['success', "服务器收到一个Ajax ["+type+"] 请求，信息为："+info]);
+router.get('', function (request, response,next) {
+    console.log("zheli")
+    if (request.cookies.user == undefined ||request.cookies.user == '') {
+        // response.render('404',{message:'请输入用户名和密码'});
+        response.redirect('/login');
+        return;
+    }else{
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[]});
+    }
 });
 
 
 router.get('/', function (request, response,next) {
-    if (request.body.username == undefined ||request.body.username == '') {
-        response.render('404',{message:'请输入用户名和密码'});
+    console.log("这里！");
+    if (request.cookies.user == undefined ||request.cookies.user == '') {
+        // response.render('404',{message:'请输入用户名和密码'});
+        response.redirect('/login');
         return;
+    }else{
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[]});
     }
 });
 
 router.get('/index', function (request, response,next) {
 
-    if (request.body.username == undefined ||request.body.username == '') {
+    if (request.cookies.username == undefined ||request.cookies.username == '') {
         response.render('404',{message:'请输入用户名和密码'});
         response.redirect('/')
         return;
+    }else{
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[]});
     }
-
-    User.findOne({
-        where:{
-            username:username
-        }
-    }).then(function(message){
-        console.log(JSON.stringify(message))
-    });
-
-
-    var user = {username: request.body.username};
-
-    var note=[{title:'大学'},{title:'阅读'},{title:'生活'}];
-
-    response.render('index', { title: 'My Note', user: user,note:note });
 });
 
+function handleData(sectionResult) {
+    // console.log(JSON.stringify(sectionResult));
+    var hello = sectionResult;
+    var getPage = function (callback) {
+        var returnResult = [];
+        Page.findAll({
+            where: {
+                sectionID: 1
+            }
+        }).then(function (message) {
+            var returnResult = [];
+            var pageResult = JSON.stringify(message);
+            pageResult = JSON.parse(pageResult);
+            if (pageResult == null) {
+                pageResult = {title: '还没有内容呢！', content: '还没有内容呢！快来记录一下吧！'};
+            }
+            for(var i=0;i<pageResult.length;i++) {
+                var temp = {
+                    id:pageResult[i].pageID,
+                    text:pageResult[i].title,
+                };
+                returnResult.push(temp);
+            }
+            callback(returnResult);
+        })
+    }
+    getPage(function (data) {
+        var returnResult = [];
+        console.log(hello);
+        for(var i=0;i<hello.length;i++) {
+            var temp = {
+                id: hello[i].sectionID,
+                text: hello[i].title,
+                children: data
+            };
+        }
+        returnResult.push(temp);
+        // console.log("~~~~~~~~~~~~~~~~~~")
+        // console.log(JSON.stringify(returnResult));
+        // console.log("~~~~~~~~~~~~~~~~~~")
+        return {
+            // data: JSON.stringify(returnResult),
+            data:'[{"id":1,"text":"大一上啊！","children":[{"id":2,"text":"上大一啦！"},{"id":6,"text":"大一下啦！"}]}]',
+            message: 'success'
+        };
+    });
 
-router.get('/showSection/:notebookID', function (request, response,next) {
+}
 
-    var type = request.query.type;
-    var info = request.query.info;
+function getPageParentID(sectionID) {
 
+    Page.findAll({
+        where: {
+            sectionID: sectionID
+        }
+    }).then(function (message,callback) {
+        var returnResult = [];
+        var pageResult = JSON.stringify(message);
+        pageResult = JSON.parse(pageResult);
+        console.log(pageResult);
+        console.log("=================haha")
+        if(pageResult==null) {
+            pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
+        }
+        // for(var i=0;i<pageResult.length;i++) {
+        //     var temp = {
+        //         id:pageResult[i].pageID,
+        //         text:pageResult[i].title,
+        //     };
+        //     returnResult.push(temp);
+        // }
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!")
+        // console.log(returnResult);
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!")
+        // return returnResult;
+    })
+
+}
+
+function setData(sectionResult) {
+    return handleData(sectionResult);
+}
+
+router.get('/addNotebook',function (request,response,next) {
+    var title = request.query.title;
+    var tag = request.query.tag;
+
+    Notebook.find({
+        where:{
+            userID:request.cookies.user.userID
+        },
+        attributes: [
+            [sequelize.fn('max', sequelize.col('notebookID')),'maxID']
+        ]
+    }, {
+        raw: true
+    }).then(function (message) {
+        var maxID=JSON.parse(JSON.stringify(message)).maxID;
+        var thisID = maxID + 1;
+
+        var notebook = {
+            notebookID: thisID,
+            userID:request.cookies.user.userID,
+            title:title,
+            tag:tag
+        };
+
+        Notebook.create(notebook).then(function(msg){
+            Notebook.findAll({
+                where:{
+                    userID:request.cookies.user.userID
+                }
+            }).then(function(message){
+                var notebookResult=JSON.stringify(message);
+                // console.log(notebookResult)
+                response.cookie('notebook', JSON.parse(notebookResult));
+
+                // response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:request.cookies.pageMenu,pageContent:request.cookies.pageContent });
+                return  response.json({
+                    message:'success'
+                })
+            });
+        });
+
+    });
+
+    // Notebook.findAll({
+    //     where: {
+    //         userID: request.cookies.user.userID
+    //     },
+    //     order: sequelize.col('notebookID','DESC')
+    // }).then(function (message) {
+    //     console.log(message)
+    // });
+
+    // Notebook.findOne({
+    //     order:[
+    //         sequelize.fn('max', sequelize.col('notebookID'))
+    //     ]
+    // }).then(function (message) {
+    //     console.log(message);
+    // });
+})
+
+router.get('/showPageMenu/:notebookID', function (request, response,next) {
     var notebookID = request.params.notebookID;
-    console.log(notebookID);
-
-    Section.findAll({
+    console.log("here!!!");
+    Page.findAll({
         where:{
             notebookID:notebookID
-        }
-    }).then(function(message){
-        var sectionResult = JSON.stringify(message);
-        sectionResult = JSON.parse(sectionResult);
-        response.cookie('section', sectionResult);
-        console.log(sectionResult);
-        response.setHeader("Access-Control-Allow-Origin", "*")
-        // response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, sect:sectionResult,page:[]});
-        // response.json(['success', '[{"id":1,"text":"Root node22","children":[{"id":2,"text":"Child node 1"},{"id":3,"text":"Child node 2"}]}]']);
-        response.json({data:'[{"id":1,"text":"Root node22","children":[{"id":2,"text":"Child node 1"},{"id":3,"text":"Child node 2"}]}]', message: 'success'})
-    });
-});
-
-router.get('/showPage/:sectionID', function (request, response,next) {
-
-    var sectionID = request.params.sectionID;
-    console.log("here!!!");
-
-    Page.findOne({
-        where:{
-            sectionID:sectionID,
         }
     }).then(function(message){
         var pageResult = JSON.stringify(message);
@@ -123,42 +213,36 @@ router.get('/showPage/:sectionID', function (request, response,next) {
         console.log(pageResult);
         if(pageResult==null) {
             pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
-
         }
-        response.cookie('page', pageResult);
-
-
-        response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, sect:request.cookies.section, page:pageResult});
+        response.cookie('pageMenu', pageResult);
+        // response.json(pageResult);
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:pageResult,pageContent:{content:'请选择笔记！'}});
 
 
     });
 });
 
-// router.route('/login')
-//     .get(function (req,res,next) {
-//     res.render('login', {title: '用户登录界面a a'});
-// })
-//     .post(function (request, response,next) {
-//         var user = {
-//             username: 'DC',
-//             password:'admin'
-//         };
-//         console.log("======");
-//
-//         console.log(request.body);
-//
-//         console.log("======");
-//
-//         if(request.body.username === user.username && request.body.password === user.password) {
-//             response.redirect('/')
-//         }
-//         response.redirect('/login');
-//     });
-
-// router.get('/login',function (req,res,next) {
-//     res.render('login', {title: '用户登录界面heihei'});
-// })
-
+router.get('/showPageContent/:pageID', function (request, response,next) {
+    var pageID = request.params.pageID;
+    console.log("here!!!");
+    Page.findOne({
+        where:{
+            pageID:pageID
+        }
+    }).then(function(message){
+        var pageResult = JSON.stringify(message);
+        pageResult = JSON.parse(pageResult);
+        console.log(pageResult);
+        if(pageResult==null) {
+            pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
+        }
+        response.cookie('pageContent', pageResult);
+        console.log(pageResult);
+        // response.json(pageResult);
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:request.cookies.pageMenu,pageContent:pageResult});
+        response.json({message: 'success'});
+    });
+});
 
 module.exports = router;
 

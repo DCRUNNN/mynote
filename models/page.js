@@ -1,5 +1,5 @@
 /**
- * 笔记本section类
+ * 笔记本page类
  */
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define("page", {
@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
             autoIncrement: true, //自动递增
             primaryKey: true //主键
         },
-        sectionID: {
+        notebookID: {
             type: DataTypes.INTEGER,
             allowNull: false
         },

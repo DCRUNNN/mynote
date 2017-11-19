@@ -6,9 +6,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
 </head>
-<body>
+<body class="login-body" style="background-image: url('/images/back3.jpg');background-size: 100%">
 <div class="container">
-    <form class="col-sm-offset-4 col-sm-4 form-horizontal" id="form" role="form" method="post" action="/index">
+    <form class="col-sm-offset-4 col-sm-4 form-horizontal" style="top:150px" id="form" role="form" method="post" action="/index">
         <fieldset>
             <legend><%= title %></legend>
             <div class="form-group">
@@ -40,10 +40,14 @@
             <!--</div>-->
 
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                    <button type="submit" class="btn btn-primary">登录</button>
+                <div class=" col-sm-12">
+                    <button type="submit" style="opacity: 0.5;" class="btn btn-default btn-lg btn-block">登录</button>
+                    <a href="/signUp"><button type="button" style="opacity: 0.5;" class="btn btn-default btn-lg btn-block">注册</button></a>
                 </div>
+
+
             </div>
+
 
         </fieldset>
     </form>
@@ -56,7 +60,7 @@
     }
 </script>
 
-<script src="/javascripts/jquery-1.10.2.min.js"></script>
+<script src="/javascripts/jquery-3.2.1.min.js"></script>
 <script src="/javascripts/bootstrap.min.js"></script>
 
 </body>

@@ -22,9 +22,6 @@
   <!--图标样式-->
   <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css"/>
 
-
-
-
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
   <!--[if lt IE 9]>
   <!--<script src="js/html5shiv.js"></script>-->
@@ -32,7 +29,7 @@
   <![endif]-->
 </head>
 
-<body>
+<body class="login-body" style="background-image: url('/images/back3.jpg');background-size: 100%">
 
 <section id="container" >
   <!--header start-->
@@ -134,25 +131,30 @@
             <span>我的笔记本</span>
           </a>
 
-           <ul class="sub" id="notebook_ul">
-              <%note.forEach(function(note2){%>
-              <li class="sub-menu" id="">
 
-                <!--"/index/showSection/<%=note2.notebookID%>"-->
-              <a href='#' onclick="setSection(event)">
+           <ul class="sub" id="notebook_ul" role="menu">
+              <%note.forEach(function(note2){%>
+              <li class="sub-menu" id="" role="presentation">
+
+              <a href="/index/showPageMenu/<%=note2.notebookID%>">
                 <i class="fa fa-book" aria-hidden="true"></i>
                 <span id="<%=note2.notebookID%>"><%=note2.title%></span>
               </a>
-
               </li>
               <%})%>
-
+             <li role="presentation" class="divider"></li>
+             <li class="sub-menu" role="presentation">
+               <a data-toggle="modal" href="#addNotebookModal">
+                 <i class="fa fa-coffee" aria-hidden="true"></i>
+                 <span>添加笔记本</span>
+               </a>
+             </li>
             </ul>
 
         </li>
 
         <li>
-          <a href="#" onclick="handle()">
+          <a href="#">
             <i class="fa fa-envelope" aria-hidden="true"></i>
             <span>好友圈</span>
             <span class="label label-danger pull-right mail-info">2</span>
@@ -160,36 +162,21 @@
         </li>
 
         <li>
-          <a>
+          <a href="#">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <span>标签管理</span>
+            <span class="label label-danger pull-right mail-info">2</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="/index/addNotebook">
             <i class="fa fa-cog" aria-hidden="true"></i>
             <span >系统设置</span>
             <span class="label label-danger pull-right mail-info">2</span>
           </a>
         </li>
 
-        <!--multi level menu start-->
-        <!--<li class="sub-menu">-->
-          <!--<a href="javascript:;" >-->
-            <!--<i class="fa fa-sitemap" aria-hidden="true"></i>-->
-            <!--<span>Multi level Menu</span>-->
-          <!--</a>-->
-          <!--<ul class="sub">-->
-            <!--<li><a  href="/index/showSection/1">Menu Item 1</a></li>-->
-            <!--<li class="sub-menu">-->
-              <!--<a  href="/index/showSection/1">Menu Item 2</a>-->
-              <!--<ul class="sub">-->
-                <!--<li><a  href="javascript:;">Menu Item 2.1</a></li>-->
-                <!--<li class="sub-menu">-->
-                  <!--<a  href="javascript:;">Menu Item 3</a>-->
-                  <!--<ul class="sub">-->
-                    <!--<li><a  href="javascript:;">Menu Item 3.1</a></li>-->
-                    <!--<li><a  href="javascript:;">Menu Item 3.2</a></li>-->
-                  <!--</ul>-->
-                <!--</li>-->
-              <!--</ul>-->
-            <!--</li>-->
-          <!--</ul>-->
-        <!--</li>-->
 
       </ul>
     </div>
@@ -205,10 +192,10 @@
       </div>
       <!--state overview end-->
 
-      <div class="row"  >
+      <div class="row">
         <div class="col-lg-12">
           <!--timeline start-->
-          <section class="panel">
+          <section class="panel" style="height: 560px">
             <div class="panel-body">
 
               <div class="mail-box">
@@ -230,85 +217,21 @@
 
                   <div>
 
-                    <div class="inbox-body">
-                      <a class="btn btn-compose" data-toggle="modal" href="#myModal">
-                        Add Section
+                    <div class="inbox-body" style="height: 430px">
+                      <a class="btn btn-compose" data-toggle="modal" href="#addPageModal">
+                        Add Page
                       </a>
                       <!-- Modal -->
-                      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                              <h4 class="modal-title">Compose</h4>
-                            </div>
-                            <div class="modal-body">
-                              <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                  <label  class="col-lg-2 control-label">To</label>
-                                  <div class="col-lg-10">
-                                    <input type="text" class="form-control" id="inputEmail1" placeholder="">
-                                  </div>
-                                </div>
-                                <div class="form-group">
-                                  <label  class="col-lg-2 control-label">Cc / Bcc</label>
-                                  <div class="col-lg-10">
-                                    <input type="text" class="form-control" id="cc" placeholder="">
-                                  </div>
-                                </div>
-                                <div class="form-group">
-                                  <label class="col-lg-2 control-label">Subject</label>
-                                  <div class="col-lg-10">
-                                    <input type="text" class="form-control" id="inputPassword1" placeholder="">
-                                  </div>
-                                </div>
-                                <div class="form-group">
-                                  <label class="col-lg-2 control-label">Message</label>
-                                  <div class="col-lg-10">
-                                    <textarea name="" id="" class="form-control" cols="30" rows="10"></textarea>
-                                  </div>
-                                </div>
-
-                                <div class="form-group">
-                                  <div class="col-lg-offset-2 col-lg-10">
-                                                      <span class="btn green fileinput-button">
-                                                        <i class="icon-plus icon-white"></i>
-                                                        <span>Attachment</span>
-                                                        <input type="file" multiple=""  name="files[]">
-                                                      </span>
-                                    <button type="submit" class="btn btn-send">Send</button>
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                          </div><!-- /.modal-content -->
-                        </div><!-- /.modal-dialog -->
-                      </div><!-- /.modal -->
-
-                      <div id="jstree">
-                        <!-- in this example the tree is populated from inline HTML -->
-                        <!--<ul>-->
-                          <!--<li>Root node 1-->
-                            <!--<ul>-->
-                              <!--<li id="child_node_1">Child node 1</li>-->
-                              <!--<li>Child node 2</li>-->
-                            <!--</ul>-->
-                          <!--</li>-->
-                          <!--<li>Root node 2</li>-->
-                        <!--</ul>-->
-                      </div>
-
-                      <!--<ul class="inbox-nav inbox-divider">-->
-                        <!--<%sect.forEach(function(section){%>-->
-                        <!--<li class="sub-menu">-->
-                          <!--<a href="/index/showPage/<%=section.sectionID%>"> <i class="fa fa-book"> &nbsp;&nbsp;<%=section.title%></i></a>  </li>-->
-
-                          <!--&lt;!&ndash;<ul class="sub">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<li><a href="#">666</a></li>&ndash;&gt;-->
-                          <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-                        <!--</li>-->
-                        <!--<%})%>-->
-                      <!--</ul>-->
+                      <ul class="inbox-nav inbox-divider">
+                        <%pageMenu.forEach(function(page){%>
+                        <li class="sub-menu">
+                          <a href="/index/showPageContent/<%=page.pageID%>"> <i class="fa fa-book"> &nbsp;&nbsp;<%=page.title%></i></a>  </li>
+                          <!--<ul class="sub">-->
+                            <!--<li><a href="#">666</a></li>-->
+                          <!--</ul>-->
+                        </li>
+                        <%})%>
+                      </ul>
                     </div>
 
 
@@ -318,8 +241,9 @@
                 <aside class="lg-side">
                   <div class="inbox-head">
                     <h3>Page</h3>
-                    <p id="status"></p>
-                    <button onclick='Req_ajax("client get", "get")'>点我</button>
+                    <!--<p id="status"></p>-->
+                    <!--'Req_ajax("client get", "get")'-->
+                    <!--<button onclick=getData()>点我</button>-->
                     <form class="pull-right position" action="#">
                       <div class="input-append">
                         <input type="text"  placeholder="Search Note" class="sr-input">
@@ -330,8 +254,8 @@
                   <div class="inbox-body">
                     <!--<img src="/images/gallery/1.jpg">-->
                     <div class="row">
-                      <div class="well" style="color:cadetblue;font-size:14px;" id="myArticleContent">
-                        <%=page.content%>
+                      <div class="well" style="color:cadetblue;font-size:14px;height: 380px" id="myArticleContent">
+                        <%=pageContent.content%>
                         <!--<p style="color:cadetblue;font-size:14px;" id="myArticleContent">{{one_content}}</p>-->
                         <!--<p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>-->
                         <!--<ul class="list-inline"><li><a href="#">2 Days Ago</a></li><li><a href="#"><i class="glyphicon glyphicon-comment"></i> 4 Comments</a></li><li><a href="#"><i class="glyphicon glyphicon-share"></i> 34 Shares</a></li></ul>-->
@@ -342,6 +266,89 @@
                 </aside>
               </div>
 
+
+              <div class="modal fade" id="addPageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title">Compose</h4>
+                    </div>
+                    <div class="modal-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                          <label  class="col-lg-2 control-label">To</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputEmail1" placeholder="">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label  class="col-lg-2 control-label">Cc / Bcc</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="cc" placeholder="">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-lg-2 control-label">Subject</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputPassword1" placeholder="">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-lg-2 control-label">Message</label>
+                          <div class="col-lg-10">
+                            <textarea name="" id="" class="form-control" cols="30" rows="10"></textarea>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="col-lg-offset-2 col-lg-10">
+                                                      <span class="btn green fileinput-button">
+                                                        <i class="icon-plus icon-white"></i>
+                                                        <span>Attachment</span>
+                                                        <input type="file" multiple=""  name="files[]">
+                                                      </span>
+                            <button type="submit" class="btn btn-send">Send</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div><!-- /.modal -->
+
+              <div class="modal fade" id="addNotebookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title">Add Notebook</h4>
+                    </div>
+                    <div class="modal-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                          <label  class="col-lg-3 control-label">Notebook Title</label>
+                          <div class="col-lg-9">
+                            <input type="text" class="form-control" id="notebook_title" placeholder="">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label  class="col-lg-3 control-label">Notebook Tag</label>
+                          <div class="col-lg-9">
+                            <input type="text" class="form-control" id="notebook_tag" placeholder="">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="col-lg-12">
+                            <button type="button" class="btn btn-default btn-lg btn-block" onclick="addNotebook()">Create</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div><!-- /.modal -->
 
               <div>
 
@@ -393,10 +400,6 @@
     <!--});-->
 <!--</script>-->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-
-<script src="/javascripts/jstree.js"></script>
-<script src="/javascripts/jstree.min.js"></script>
 
 <script>
 
@@ -421,102 +424,28 @@
 </script>
 
 <script>
-    var OL_Action_Root = "http://127.0.0.1:3000/index";
-    var xmlHttp = null;
-    function Req_ajax(info, type)
-    {
-        $.ajax({
-            data: {info:info, type:type},
-            url: OL_Action_Root+"/showSection/1",
-            dataType: 'json',
-            cache: false,
-            timeout: 5000,
-            type:type,    // 如果要使用GET方式，则将此处改为'get'
-            success: function(data){
-                var res = data;
-                console.log(data);
-                if(res.message == 'success')
-                {
-                    document.getElementById("status").innerHTML += "<p style='color:green; font-weight:bold;'>服务器返回信息: " + res.data + "</p>";
-                }
-                else
-                {
-                    document.getElementById("status").innerHTML += "<p style='color:#2289DB; font-weight:bold;'>获取服务器信息失败！ " + res.data + "</p>";
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                document.getElementById("texta").innerHTML=errorThrown;
-
-
-                document.getElementById("status").innerHTML += "<p style='color:#C00000; font-weight:bold;'>连接不到服务器，请检查网络！</p>";
-            }
-        });
-    }
-</script>
-
-
-<script>
-    function setSection(event) {
-        // 6 create an instance when the DOM is ready
-//        $('#jstree').jstree();
-        alert("执行了！");
-
-        $("#jstree").jstree({
-            "core" : {
-                "themes" : {
-                    "responsive": false
-                },
-                // so that create works
-                "check_callback" : true,
-                'url': "http://127.0.0.1/3000/index/ajax"+"/req_ajax",
-                'data' : function (obj, callback) {
-                    var jsonstr="[]";
-                    var jsonarray = eval('('+jsonstr+')');
-                    $.ajax({
-                        data: {info:'get请求', type:'get'},
-                        url: "http://127.0.0.1/3000/index/ajax/"+"/req_ajax",
-                        dataType: 'json',
-                        cache: false,
-                        timeout: 5000,
-                        type:'get',    // 如果要使用GET方式，则将此处改为'get'
-                        success: function(data){
-                            var res = data;
-                            if(res[0] == 'success')
-                            {
-                                document.getElementById("status").innerHTML += "<p style='color:green; font-weight:bold;'>服务器返回信息: " + res[1] + "</p>";
-                            }
-                            else
-                            {
-                                document.getElementById("status").innerHTML += "<p style='color:#2289DB; font-weight:bold;'>获取服务器信息失败！ " + res[1] + "</p>";
-                            }
-                        },
-                        error: function(jqXHR, textStatus, errorThrown){
-                            document.getElementById("texta").innerHTML=errorThrown;
-
-
-                            document.getElementById("status").innerHTML += "<p style='color:#C00000; font-weight:bold;'>连接不到服务器，请检查网络！</p>";
-                        }
-                    });
-                    callback.call(this, jsonarray);
-                }
-            },
-            "types" : {
-                "default" : {
-                    "icon" : "glyphicon glyphicon-flash"
-                },
-                "file" : {
-                    "icon" : "glyphicon glyphicon-ok"
-                }
-            },
-            "state" : { "key" : "demo2" },
-            "plugins" : [ "dnd", "state", "types","checkbox","wholerow" ]
-        });
-
-        // 7 bind to events triggered on the tree
-        $('#jstree').on("changed.jstree", function (e, data) {
-            alert(data.instance.get_node(data.selected).text);      //输出当前选中的区域的名称
-        });
-    }
+  function addNotebook() {
+      $.ajax({
+          data: {title:document.getElementById("notebook_title").value, tag:document.getElementById("notebook_tag").value},
+          url: "/index/addNotebook",
+          dataType: 'json',
+//                        async: false,
+          contentType:'application/json;charset=UTF-8',
+          cache: false,
+          timeout: 0,
+          type:'get',    // 如果要使用GET方式，则将此处改为'get'
+          headers: {
+              'Access-Control-Allow-Origin': '*'
+          },
+          success: function(){
+              alert("添加笔记本成功！");
+              window.location.reload();
+          },
+          error:function () {
+              alert("添加笔记本失败！");
+          }
+      })
+  }
 </script>
 
 
