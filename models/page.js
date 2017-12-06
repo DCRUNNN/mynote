@@ -13,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        notebookTitle: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         title: {
             type: DataTypes.STRING,
             allowNull: false
@@ -23,6 +27,10 @@ module.exports = function(sequelize, DataTypes) {
         },
         content: {
             type: DataTypes.TEXT,
+            allowNull: false
+        },
+        userID: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     },{

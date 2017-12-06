@@ -8,10 +8,11 @@ var session = require('express-session');
 
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var userManage = require('./routes/userManage');
 var login = require('./routes/login');
 var signUp = require('./routes/signUp');
 var notebook = require('./routes/notebook');
+var tagManage = require('./routes/tagManage');
 
 var databaseHelper = require('./routes/database');
 var app = express();
@@ -31,10 +32,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', login);
-app.use('/users', users);
+app.use('/userManage', userManage);
 app.use('/index', routes);
 app.use('/signUp', login);
 app.use('/notebook', notebook);
+app.use('/tagManage', tagManage);
 
 // app.use('home', routes);
 

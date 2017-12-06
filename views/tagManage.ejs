@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:html="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mosaddek">
+    <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <title>My Note</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/bootstrap-reset.css" rel="stylesheet">
+    <!--external css-->
+    <link href="/stylesheets/font-awesome.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/stylesheets/owl.carousel.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/demo_table.css" />
+
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <link href="/stylesheets/style-responsive.css" rel="stylesheet" />
+    <!--图标样式-->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css"/>
+
+    <script src="/plugins/ckeditor/ckeditor.js"></script>
+
+    <style>
+        .selected{font-weight:bold; background-color:#c7cbd4;}
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+    <!--[if lt IE 9]>
+    <!--<script src="js/html5shiv.js"></script>-->
+    <!--<script src="js/respond.min.js"></script>-->
+    <![endif]-->
+</head>
+
+<body class="login-body" style="background-image: url('/images/back3.jpg');background-size: 100%">
+
+<section id="container" >
+    <!--header start-->
+    <header class="header white-bg">
+
+        <div class="sidebar-toggle-box">
+            <div data-original-title="Toggle Navigation" data-placement="right" class="fa fa-reorder icon-reorder tooltips"></div>
+        </div>
+
+        <a href="/" class="logo"><span><%= title %></span></a>
+
+        <div class="nav notify-row" id="top_menu">
+            <!--  notification start -->
+            <ul class="nav top-menu">
+                <!-- settings start -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                        <span class="badge bg-success">6</span>
+                    </a>
+                    <ul class="dropdown-menu extended tasks-bar">
+                        <div class="notify-arrow notify-arrow-green"></div>
+                        <li>
+                            <p class="green">You have 6 pending tasks</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- settings end -->
+                <!-- inbox dropdown start-->
+                <li id="header_inbox_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span class="badge bg-important">5</span>
+                    </a>
+                    <ul class="dropdown-menu extended inbox">
+                        <div class="notify-arrow notify-arrow-red"></div>
+                        <li>
+                            <p class="red">You have 5 new messages</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- inbox dropdown end -->
+                <!-- notification dropdown start-->
+                <li id="header_notification_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+
+                        <i class="fa fa-bell-o" aria-hidden="true"></i>
+                        <span class="badge bg-warning">7</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <div class="notify-arrow notify-arrow-yellow"></div>
+                        <li>
+                            <p class="yellow">You have 7 new notifications</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- notification dropdown end -->
+            </ul>
+            <!--  notification end -->
+        </div>
+        <div class="top-nav ">
+            <!--search & user info start-->
+            <ul class="nav pull-right top-menu">
+                <li>
+                    <input type="text" class="form-control search" placeholder="Search">
+                </li>
+                <!-- user login dropdown start-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <img alt="" src="/images/avatar-mini.jpg">
+                        <span class="username"> <%= user.username %> </span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu extended logout">
+                        <div class="log-arrow-up"></div>
+                        <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
+                        <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>
+                        <li><a href="/"><i class="fa fa-key"></i> Log Out</a></li>
+                    </ul>
+                </li>
+                <!-- user login dropdown end -->
+            </ul>
+            <!--search & user info end-->
+        </div>
+    </header>
+
+    <!--sidebar start-->
+    <aside>
+
+        <div id="sidebar"  class="nav-collapse ">
+
+            <!-- sidebar menu start-->
+            <ul class="sidebar-menu" id="nav-accordion">
+
+                <li class="sub-menu">
+                    <a href="/" >
+                        <i class="fa fa-book" aria-hidden="true"></i>
+                        <span>我的笔记本</span>
+                    </a>
+
+                    <ul class="sub" id="notebook_ul" role="menu">
+                        <%note.forEach(function(note2){%>
+                        <li class="sub-menu" role="presentation" id="context">
+                            <a href="/index/showPageMenu/<%=note2.notebookID%>">
+                                <i class="fa fa-book" aria-hidden="true"></i>
+                                <span id="<%=note2.notebookID%>"><%=note2.title%></span>
+                            </a>
+                        </li>
+                        <%})%>
+
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span>好友圈</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="active" href="#">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <span>标签管理</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index/addNotebook">
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+                        <span >我的信息</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index/userManage">
+                        <i class="fa fa-qq" aria-hidden="true"></i>
+                        <span >账户管理</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+    </aside>
+    <!--sidebar end-->
+
+    <!--main content start-->
+    <section id="main-content" >
+        <section class="wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--timeline start-->
+                    <section class="panel" >
+                        <header class="panel-heading">
+                            标签管理
+                        </header>
+                        <div class="panel-body">
+                            <div class="adv-table editable-table ">
+                                <div class="clearfix">
+                                    <div class="form-group">
+                                        <label  class="col-md-2 control-label">笔记本标签</label>
+                                        <div class="col-md-6">
+                                            <select class="form-control" id="notebook_tag" onchange="showNotebookByTag()">
+                                                <option>所有</option>
+                                                <%notebookTags.forEach(function(notebookTag){%>
+                                                <option><%=notebookTag.value%></option>
+                                                <%})%>
+                                            </select>
+                                        </div>
+                                        <div class="btn-group col-md-4">
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" href="#addNotebookTagModal">添加</button>
+                                            <button type="button" class="btn btn-sm btn-danger" style="margin-left:20px" >删除</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="notebookTable" class="table table-bordered table-striped table-condensed" style="text-align:center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align:center">笔记本编号</th>
+                                        <th style="text-align:center">笔记本名称</th>
+                                        <th style="text-align:center">笔记本标签</th>
+                                        <th style="text-align:center">修改</th>
+                                        <th style="text-align:center">删除</th>
+                                    </tr>
+                                    </thead>
+                                    <br>
+                                    <tbody>
+                                    <%note.forEach(function(note2){%>
+                                    <tr>
+                                        <td><%=note2.notebookID%></td>
+                                        <td><%=note2.title%></td>
+                                        <td><%=note2.tag%></td>
+                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyUserModal" onclick="setDataToDialog('<%=user.userID%>','<%=user.username%>','<%=user.email%>','<%=user.phoneNumber%>','<%=user.privilege%>')"><i class="fa fa-edit">修改</i></button></td>
+                                        <td><button class="btn btn-warning" data-toggle="modal" href="#deleteUserModal" onclick="setDataToDeleteDialog('<%=user.userID%>','<%=user.username%>')"><i class="fa fa-close" >删除</i></button></td>
+                                    </tr>
+                                    <%})%>
+                                    </tbody>
+                                </table>
+
+                                <HR style="color:#000000;size:3px" width="100%" >
+
+                                <div class="clearfix">
+                                    <div class="form-group">
+                                        <label  class="col-md-2 control-label">笔记标签</label>
+                                        <div class="col-md-6">
+                                            <select class="form-control" id="page_tag" onchange="showPageByTag()">
+                                                <option>所有</option>
+                                                <%pageTags.forEach(function(pageTag){%>
+                                                <option><%=pageTag.value%></option>
+                                                <%})%>
+                                            </select>
+                                        </div>
+                                        <div class="btn-group col-md-4">
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" href="#addPageTagModal">添加</button>
+                                            <button type="button" class="btn btn-sm btn-danger" style="margin-left:20px;" >删除</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <table id="pageTable" class="table table-bordered table-striped table-condensed" style="text-align:center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align:center">笔记编号</th>
+                                        <th style="text-align:center">笔记名称</th>
+                                        <th style="text-align:center">所属笔记本</th>
+                                        <th style="text-align: center">笔记标签</th>
+                                        <th style="text-align:center">修改</th>
+                                        <th style="text-align:center">删除</th>
+                                    </tr>
+                                    </thead>
+                                    <br>
+                                    <tbody>
+                                    <%allPages.forEach(function(page){%>
+                                    <tr>
+                                        <td><%=page.pageID%></td>
+                                        <td><%=page.title%></td>
+                                        <td><%=page.notebookTitle%></td>
+                                        <td><%=page.tag%></td>
+                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyUserModal" onclick="setDataToDialog('<%=user.userID%>','<%=user.username%>','<%=user.email%>','<%=user.phoneNumber%>','<%=user.privilege%>')"><i class="fa fa-edit">修改</i></button></td>
+                                        <td><button class="btn btn-warning" data-toggle="modal" href="#deleteUserModal" onclick="setDataToDeleteDialog('<%=user.userID%>','<%=user.username%>')"><i class="fa fa-close" >删除</i></button></td>
+                                    </tr>
+                                    <%})%>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            </div>
+
+            <div class="modal fade" id="addPageTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Add Tag of Page</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label  class="col-lg-3 control-label">Page Tag</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control" id="page_newTag" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-default btn-lg btn-block" onclick="addPageTag()">Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            <div class="modal fade" id="addNotebookTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Add Tag of Notebook</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label  class="col-lg-3 control-label">Notebook Tag</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control" id="notebook_newTag" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-default btn-lg btn-block" onclick="addNotebookTag()">Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+
+        </section>
+    </section>
+    <!--main content end-->
+
+
+    <!--footer start-->
+
+    <!--footer end-->
+</section>
+
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="/javascripts/jquery-3.2.1.min.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="/javascripts/jquery.dcjqaccordion.2.7.js"></script>
+<script src="/javascripts/owl.carousel.js" ></script>
+<script src="/javascripts/jquery.scrollTo.min.js"></script>
+<script src="/javascripts/jquery.nicescroll.js" type="text/javascript"></script>
+
+<script src="/javascripts/jquery.customSelect.min.js" ></script>
+<script type="text/javascript" src="/javascripts/jquery.dataTables.js"></script>
+<script src="/javascripts/respond.min.js" ></script>
+
+<!--common script for all pages-->
+<script src="/javascripts/common-scripts.js"></script>
+
+
+<!--<script>-->
+<!--$(document).ready(function () {-->
+<!--alert("编译原理文档！");-->
+<!--});-->
+<!--</script>-->
+
+<script>
+
+    //owl carousel
+    $(document).ready(function() {
+        $("#owl-demo").owlCarousel({
+            navigation : true,
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem : true,
+            autoPlay:true
+
+        });
+    });
+
+    //custom select box
+
+    $(function(){
+        $('select.styled').customSelect();
+    });
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#example').dataTable( {
+            "aaSorting": [[ 4, "desc" ]]
+        } );
+    } );
+</script>
+
+<script>
+
+    function showNotebookByTag(){
+        var selectedTag = $('#notebook_tag').children('option:selected').val();
+
+        $.ajax({
+            data: {notebookTag:selectedTag},
+            url: "/tagManage/getNotebookByTag",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    var data = result.data;
+                    document.getElementById("notebookTable").innerHTML='<th style="text-align:center">笔记本编号</th><th style="text-align:center">笔记本名称</th><th style="text-align:center">笔记本标签</th><th style="text-align:center">修改</th><th style="text-align:center">删除</th>';
+                    for(var i=0; i<data.length;i++){
+                        $("#notebookTable").append(
+                            "<tr><td>"+data[i].notebookID+
+                            "</td><td>"+data[i].title+
+                            "</td><td>"+data[i].tag+
+                            "</td><td>"+"<button class=\"btn btn-default\" data-toggle=\"modal\" href=\"#modifyUserModal\"><i class=\"fa fa-edit\">修改</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-warning\" data-toggle=\"modal\" href=\"#deleteUserModal\" ><i class=\"fa fa-close\" >删除</i></button>"+
+                            "</td><tr>"
+                        )
+                    }
+                } else {
+                    alert("获取笔记本信息失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("获取笔记本信息失败！请刷新重试！");
+            }
+        });
+    }
+
+    function showPageByTag(){
+        var selectedTag = $('#page_tag').children('option:selected').val();
+
+        $.ajax({
+            data: {pageTag:selectedTag},
+            url: "/tagManage/getPageByTag",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    var data = result.data;
+                    document.getElementById("pageTable").innerHTML="<th style=\"text-align:center\">笔记编号</th>\n" +
+                        "                                        <th style=\"text-align:center\">笔记名称</th>\n" +
+                        "                                        <th style=\"text-align:center\">所属笔记本</th>\n" +
+                        "                                        <th style=\"text-align: center\">笔记标签</th>\n" +
+                        "                                        <th style=\"text-align:center\">修改</th>\n" +
+                        "                                        <th style=\"text-align:center\">删除</th>";
+                    for(var i=0; i<data.length;i++){
+                        $("#pageTable").append(
+                            "<tr><td>"+data[i].pageID+
+                            "</td><td>"+data[i].title+
+                            "</td><td>"+data[i].notebookID+
+                            "</td><td>"+data[i].tag+
+                            "</td><td>"+"<button class=\"btn btn-default\" data-toggle=\"modal\" href=\"#modifyUserModal\"><i class=\"fa fa-edit\">修改</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-warning\" data-toggle=\"modal\" href=\"#deleteUserModal\" ><i class=\"fa fa-close\" >删除</i></button>"+
+                            "</td><tr>"
+                        )
+                    }
+                } else {
+                    alert("获取笔记2信息失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("获取笔记信息失败3！请刷新重试！");
+            }
+        });
+    }
+
+    function addNotebookTag(){
+        $.ajax({
+            data: {
+                notebookTag:document.getElementById("notebook_newTag").value
+            },
+            url: "/tagManage/addNotebookTag",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function () {
+                alert("添加笔记本标签成功！");
+                window.location.reload();
+            },
+            error: function () {
+                alert("添加笔记本标签失败！");
+            }
+        });
+    }
+
+    function addPageTag(){
+        $.ajax({
+            data: {
+                pageTag:document.getElementById("page_newTag").value
+            },
+            url: "/tagManage/addPageTag",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function () {
+                alert("添加笔记标签成功！");
+                window.location.reload();
+            },
+            error: function () {
+                alert("添加笔记标签失败！");
+            }
+        });
+
+    }
+
+    function getCookieValue(key) {
+        var data = decodeURI(document.cookie).split(";");
+        for(var i=0;i<data.length;i++) {
+            if(data[i].trim().indexOf(key)==0) {
+                return data[i].trim();
+            }
+        }
+    }
+
+</script>
+
+</body>
+</html>

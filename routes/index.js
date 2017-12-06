@@ -8,8 +8,11 @@ var { sequelize } = require("../config/db");
 var User = sequelize.import("../models/user");
 var Notebook = sequelize.import('../models/notebook');
 var Page = sequelize.import('../models/page');
+var Tag = sequelize.import('../models/tag');
 
 var page = [];
+var currentNotebook = [];
+var currentPage = [];
 
 
 /* GET home page. */
@@ -23,25 +26,23 @@ router.get('/ajax', function(req, res, next) {
 });
 
 router.get('', function (request, response,next) {
-    console.log("zheli")
     if (request.cookies.user == undefined ||request.cookies.user == '') {
         // response.render('404',{message:'请输入用户名和密码'});
         response.redirect('/login');
         return;
     }else{
-        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[]});
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[],currentNotebook:currentNotebook});
     }
 });
 
 
 router.get('/', function (request, response,next) {
-    console.log("这里！");
     if (request.cookies.user == undefined ||request.cookies.user == '') {
         // response.render('404',{message:'请输入用户名和密码'});
         response.redirect('/login');
         return;
     }else{
-        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[]});
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[],currentNotebook:currentNotebook});
     }
 });
 
@@ -52,12 +53,11 @@ router.get('/index', function (request, response,next) {
         response.redirect('/')
         return;
     }else{
-        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[]});
+        response.render('index', { title: 'My Note', user:request.cookies.user, note:[], pageMenu:[],pageContent:[],currentNotebook:currentNotebook});
     }
 });
 
 function handleData(sectionResult) {
-    // console.log(JSON.stringify(sectionResult));
     var hello = sectionResult;
     var getPage = function (callback) {
         var returnResult = [];
@@ -84,7 +84,6 @@ function handleData(sectionResult) {
     }
     getPage(function (data) {
         var returnResult = [];
-        console.log(hello);
         for(var i=0;i<hello.length;i++) {
             var temp = {
                 id: hello[i].sectionID,
@@ -93,9 +92,7 @@ function handleData(sectionResult) {
             };
         }
         returnResult.push(temp);
-        // console.log("~~~~~~~~~~~~~~~~~~")
-        // console.log(JSON.stringify(returnResult));
-        // console.log("~~~~~~~~~~~~~~~~~~")
+
         return {
             // data: JSON.stringify(returnResult),
             data:'[{"id":1,"text":"大一上啊！","children":[{"id":2,"text":"上大一啦！"},{"id":6,"text":"大一下啦！"}]}]',
@@ -115,22 +112,9 @@ function getPageParentID(sectionID) {
         var returnResult = [];
         var pageResult = JSON.stringify(message);
         pageResult = JSON.parse(pageResult);
-        console.log(pageResult);
-        console.log("=================haha")
         if(pageResult==null) {
             pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
         }
-        // for(var i=0;i<pageResult.length;i++) {
-        //     var temp = {
-        //         id:pageResult[i].pageID,
-        //         text:pageResult[i].title,
-        //     };
-        //     returnResult.push(temp);
-        // }
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!")
-        // console.log(returnResult);
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!")
-        // return returnResult;
     })
 
 }
@@ -139,48 +123,137 @@ function setData(sectionResult) {
     return handleData(sectionResult);
 }
 
+router.get('/userManage', function (request, response, next) {
+    User.findAll({
+    }).then(function(message){
+        var userResult=JSON.stringify(message);
+        response.cookie('allUser', JSON.parse(userResult));
+        response.render('userManage', { title: 'My Note', user: request.cookies.user, note:request.cookies.notebook,users:JSON.parse(userResult) });
+
+        // response.cookie('user', user);
+        // response.cookie('notebook', JSON.parse(notebookResult));
+        // response.render('index', { title: 'My Note', user: user, note:JSON.parse(notebookResult),pageMenu:[],pageContent:[],currentNotebook:[] });
+
+    });
+});
+
+router.get('/tagManage', function (request, response, next) {
+
+    Tag.findAll({
+        where:{
+            type:"笔记本",
+            userID:request.cookies.user.userID
+        }
+    }).then(function(message){
+        var notebookTagResult=JSON.stringify(message);
+
+        response.cookie('notebookTagResult', JSON.parse(notebookTagResult));
+
+        Tag.findAll({
+            where:{
+                type:"笔记",
+                userID:request.cookies.user.userID
+            }
+        }).then(function(message2){
+            var pageTagResult=JSON.stringify(message2);
+            response.cookie('pageTagResult', JSON.parse(pageTagResult));
+
+            Page.findAll({
+                where:{
+                    userID:request.cookies.user.userID
+                }
+            }).then(function(message3){
+                var pageTagResultForTag=JSON.stringify(message3);
+                response.cookie('pageResultForTag', JSON.parse(pageTagResultForTag));
+
+                response.render('tagManage', { title: 'My Note', user: request.cookies.user, note:request.cookies.notebook,notebookTags:JSON.parse(notebookTagResult),pageTags:JSON.parse(pageTagResult),allPages:JSON.parse(pageTagResultForTag) });
+
+            });
+
+        });
+
+    });
+
+});
+
+router.get('/getAllPageTags', function (request, response, next) {
+
+    Tag.findAll({
+        where:{
+            type:"笔记",
+            userID:request.cookies.user.userID
+        }
+    }).then(function(message){
+        var pageTagResult=JSON.stringify(message);
+        return response.json({
+            message: 'success',
+            data: JSON.parse(pageTagResult)
+        });
+    });
+
+});
+
+router.get('/getAllNotebookTags', function (request, response, next) {
+
+    Tag.findAll({
+        where:{
+            type:"笔记本",
+            userID:request.cookies.user.userID
+        }
+    }).then(function(message){
+        var notebookTagResult=JSON.stringify(message);
+        return response.json({
+            message: 'success',
+            data: JSON.parse(notebookTagResult)
+        });
+    });
+
+});
+
 router.get('/addNotebook',function (request,response,next) {
     var title = request.query.title;
     var tag = request.query.tag;
 
-    Notebook.find({
-        where:{
-            userID:request.cookies.user.userID
-        },
-        attributes: [
-            [sequelize.fn('max', sequelize.col('notebookID')),'maxID']
-        ]
-    }, {
-        raw: true
-    }).then(function (message) {
-        var maxID=JSON.parse(JSON.stringify(message)).maxID;
-        var thisID = maxID + 1;
+    var notebook = {
+        notebookID: "",
+        userID:request.cookies.user.userID,
+        title:title,
+        tag:tag
+    };
 
-        var notebook = {
-            notebookID: thisID,
-            userID:request.cookies.user.userID,
-            title:title,
-            tag:tag
-        };
+    Notebook.create(notebook).then(function(msg){
+        Notebook.findAll({
+            where:{
+                userID:request.cookies.user.userID
+            }
+        }).then(function(message){
+            var notebookResult=JSON.stringify(message);
+            response.cookie('notebook', JSON.parse(notebookResult));
 
-        Notebook.create(notebook).then(function(msg){
-            Notebook.findAll({
-                where:{
-                    userID:request.cookies.user.userID
-                }
-            }).then(function(message){
-                var notebookResult=JSON.stringify(message);
-                // console.log(notebookResult)
-                response.cookie('notebook', JSON.parse(notebookResult));
-
-                // response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:request.cookies.pageMenu,pageContent:request.cookies.pageContent });
-                return  response.json({
-                    message:'success'
-                })
-            });
+            return  response.json({
+                message:'success'
+            })
         });
-
     });
+
+
+    //使用id自增，无需找到最大ID然后+1再插入
+    // Notebook.find({
+    //     where:{
+    //         userID:request.cookies.user.userID
+    //     },
+    //     attributes: [
+    //         [sequelize.fn('max', sequelize.col('notebookID')),'maxID']
+    //     ]
+    // }, {
+    //     raw: true
+    // }).then(function (message) {
+    //     var maxID=JSON.parse(JSON.stringify(message)).maxID;
+    //     var thisID = maxID + 1;
+    //
+    //
+    //
+    // });
 
     // Notebook.findAll({
     //     where: {
@@ -200,31 +273,216 @@ router.get('/addNotebook',function (request,response,next) {
     // });
 })
 
+router.get('/modifyNotebook',function (request,response,next) {
+
+    Notebook.update({
+        title:request.query.title,
+        tag:request.query.tag,
+    }, {
+        where: {
+            notebookID: request.query.notebookID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            Notebook.findAll({
+                where:{
+                    userID:request.cookies.user.userID
+                }
+            }).then(function(message2){
+                var notebookResult=JSON.stringify(message2);
+                // console.log(notebookResult)
+                response.cookie('notebook', JSON.parse(notebookResult));
+                response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:[],pageContent:[],currentNotebook:[] });
+            });
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+})
+
+router.get('/deleteNotebook', function(request, response, next) {
+    Notebook.destroy({
+        where: {
+            notebookID: request.query.notebookID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            // return  response.json({
+            //     message:'success',
+            // })
+            Notebook.findAll({
+                where:{
+                    userID:request.cookies.user.userID
+                }
+            }).then(function(message2){
+                var notebookResult=JSON.stringify(message2);
+                // console.log(notebookResult)
+                response.cookie('notebook', JSON.parse(notebookResult));
+                response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:[],pageContent:[],currentNotebook:[] });
+            });
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+
+});
+
+router.get('/addPage',function (request,response,next) {
+    var title = request.query.title;
+    var tag = request.query.tag;
+    var notebookID = request.query.notebookID;
+    var notebookTitle = request.query.notebookTitle;
+    var page = {
+        pageID: "",
+        notebookID:notebookID,
+        notebookTitle:notebookTitle,
+        title:title,
+        tag:tag,
+        content:"",
+        userID:request.cookies.user.userID
+    };
+
+    Page.create(page).then(function(msg){
+        Page.findAll({
+            where:{
+                notebookID:notebookID
+
+            }
+        }).then(function(message){
+            var pageResult=JSON.stringify(message);
+            response.cookie('pageMenu', JSON.parse(pageResult));
+            // response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:request.cookies.pageMenu,pageContent:request.cookies.pageContent });
+            return  response.json({
+                message:'success'
+            })
+        });
+    });
+
+
+
+
+})
+
+router.get('/deletePage', function(request, response, next) {
+    Page.destroy({
+        where: {
+            pageID: request.query.pageID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            Page.findAll({
+                where:{
+                    notebookID:request.cookies.currentNotebook.notebookID
+                }
+            }).then(function(message2){
+                var pageResult = JSON.stringify(message2);
+                pageResult = JSON.parse(pageResult);
+                if(pageResult==null) {
+                    pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
+                }
+                response.cookie('pageMenu', pageResult);
+                // response.json(pageResult);
+                response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:pageResult,pageContent:{content:'请选择笔记！'},currentNotebook:currentNotebook});
+
+            });
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+
+});
+
+
+router.get('/updatePage',function (request,response,next) {
+    var content = request.query.content;
+    var notebookID = request.cookies.currentNotebook.notebookID;
+    var title = request.query.title;
+    var newTitle = request.query.newTitle;
+
+    var page = {
+        content: content,
+        notebookID: notebookID,
+        newTitle: newTitle
+    };
+
+    Page.update({
+        content:content,
+        title:newTitle
+    }, {
+        where: {
+           notebookID:notebookID,
+            title:title,
+        }
+
+    }).then(function(message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if(success==true) {
+            return response.json({
+                message: 'success',page:JSON.parse(JSON.stringify(page))
+            })
+        }else{
+            return response.json({
+                message: 'error',page:JSON.parse(JSON.stringify(page))
+            })
+        }
+        // response.cookie('pageMenu', JSON.parse(pageResult));
+        // // response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:request.cookies.pageMenu,pageContent:request.cookies.pageContent });
+        // return response.json({
+        //     message: 'success'
+        // })
+    })
+
+
+})
+
+
 router.get('/showPageMenu/:notebookID', function (request, response,next) {
     var notebookID = request.params.notebookID;
-    console.log("here!!!");
-    Page.findAll({
+    Notebook.findOne({
         where:{
             notebookID:notebookID
         }
-    }).then(function(message){
-        var pageResult = JSON.stringify(message);
-        pageResult = JSON.parse(pageResult);
-        console.log(pageResult);
-        if(pageResult==null) {
-            pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
-        }
-        response.cookie('pageMenu', pageResult);
-        // response.json(pageResult);
-        response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:pageResult,pageContent:{content:'请选择笔记！'}});
+    }).then(function (message) {
+        var notebookResult = JSON.stringify(message);
+        currentNotebook = JSON.parse(notebookResult);
+        response.cookie('currentNotebook',currentNotebook);
+        Page.findAll({
+            where:{
+                notebookID:notebookID
+            }
+        }).then(function(message){
+            var pageResult = JSON.stringify(message);
+            pageResult = JSON.parse(pageResult);
+            if(pageResult==null) {
+                pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
+            }
+            response.cookie('pageMenu', pageResult);
+            // response.json(pageResult);
+            response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:pageResult,pageContent:{content:'请选择笔记！'},currentNotebook:currentNotebook});
 
+        });
+    })
 
-    });
 });
 
 router.get('/showPageContent/:pageID', function (request, response,next) {
     var pageID = request.params.pageID;
-    console.log("here!!!");
     Page.findOne({
         where:{
             pageID:pageID
@@ -232,17 +490,21 @@ router.get('/showPageContent/:pageID', function (request, response,next) {
     }).then(function(message){
         var pageResult = JSON.stringify(message);
         pageResult = JSON.parse(pageResult);
-        console.log(pageResult);
+
         if(pageResult==null) {
             pageResult = {title:'还没有内容呢！',content:'还没有内容呢！快来记录一下吧！'};
         }
         response.cookie('pageContent', pageResult);
-        console.log(pageResult);
         // response.json(pageResult);
-        response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:request.cookies.pageMenu,pageContent:pageResult});
-        response.json({message: 'success'});
+        response.json({message: 'success',pageContent:pageResult});
+        // response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:request.cookies.pageMenu,pageContent:pageResult,currentNotebook:currentNotebook});
+
     });
 });
+
+
+
+
 
 module.exports = router;
 

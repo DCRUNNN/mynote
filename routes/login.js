@@ -27,7 +27,6 @@ router.post('/index',function (request, response,next) {
 
     const self = this;
 
-
     if (request.body.username == undefined ||request.body.username == '') {
         response.render('error');
         return;
@@ -56,9 +55,10 @@ router.post('/index',function (request, response,next) {
                 var notebookResult=JSON.stringify(message);
                 // console.log(notebookResult)
 
+
                 response.cookie('user', user);
                 response.cookie('notebook', JSON.parse(notebookResult));
-                response.render('index', { title: 'My Note', user: user, note:JSON.parse(notebookResult),pageMenu:[],pageContent:[] });
+                response.render('index', { title: 'My Note', user: user, note:JSON.parse(notebookResult),pageMenu:[],pageContent:[],currentNotebook:[] });
 
             });
 
