@@ -181,7 +181,7 @@
                 </li>
 
                 <li>
-                    <a href="/index/userManage">
+                    <a href="/index/myInfo">
                         <i class="fa fa-cog" aria-hidden="true"></i>
                         <span >我的信息</span>
                         <span class="label label-danger pull-right mail-info">2</span>
@@ -195,7 +195,6 @@
                         <span class="label label-danger pull-right mail-info">2</span>
                     </a>
                 </li>
-
             </ul>
 
             <div id="context-menu">
@@ -214,134 +213,141 @@
     <!--main content start-->
     <section id="main-content" >
         <section class="wrapper">
+            <section class="panel">
+                <header class="panel-heading">
+                    My Info
+                    <span class="tools pull-right">
+                        <a class="fa fa-arrow-down" href="javascript:;"></a>
+                        <a class="fa fa-remove" href="javascript:;"></a>
+                    </span>
+                </header>
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <!--timeline start-->
-                    <section class="panel" >
-                        <header class="panel-heading">
-                            账户管理
-                        </header>
-                        <div class="panel-body">
-                            <div class="adv-table">
-                                <table class="display table table-bordered table-striped" id="example" style="text-align:center">
-                                    <thead>
-                                    <tr>
-                                        <th style="text-align:center">用户编号</th>
-                                        <th style="text-align:center">用户名</th>
-                                        <th style="text-align:center">邮箱</th>
-                                        <th style="text-align:center">电话号码(s)</th>
-                                        <th style="text-align:center">权限</th>
-                                        <th style="text-align:center">修改</th>
-                                        <th style="text-align:center">删除</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <%users.forEach(function(user){%>
-                                    <tr class="gradeA">
-                                        <td><%=user.userID%></td>
-                                        <td><%=user.username%></td>
-                                        <td><%=user.email%></td>
-                                        <td><%=user.phoneNumber%></td>
-                                        <td><%=user.privilege%></td>
-                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyUserModal" onclick="setDataToDialog('<%=user.userID%>','<%=user.username%>','<%=user.email%>','<%=user.phoneNumber%>','<%=user.privilege%>')"><i class="fa fa-edit">修改</i></button></td>
-                                        <td><button class="btn btn-warning" data-toggle="modal" href="#deleteUserModal" onclick="setDataToDeleteDialog('<%=user.userID%>','<%=user.username%>')"><i class="fa fa-close" >删除</i></button></td>
-                                    </tr>
-                                    <%})%>
-                                    </tbody>
-                                    <!--<tfoot>-->
-                                    <!--<tr>-->
-                                        <!--<th>用户名</th>-->
-                                        <!--<th>邮箱</th>-->
-                                        <!--<th>电话号码(s)</th>-->
-                                        <!--<th class="hidden-phone">权限</th>-->
-                                        <!--<th>修改</th>-->
-                                        <!--<th>删除</th>-->
-                                    <!--</tr>-->
-                                    <!--</tfoot>-->
-                                </table>
-                            </div>
+                <div class="panel-body" >
+                    <div class="row">
+                        <aside class="profile-nav col-lg-3">
+                            <section class="panel">
+                                <div class="user-heading round">
+                                    <a href="#">
+                                        <img src="/images/profile-avatar.jpg" alt="">
+                                    </a>
+                                    <h1><%=user.username%></h1>
+                                    <p><%=user.email%></p>
+                                </div>
 
-                        </div>
-                    </section>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li class="active"><a href="/index/myInfo"> <i class="icon-user"></i> 我的资料</a></li>
+                                    <li><a href="#" onclick="showEditProfilePanel()"> <i class="icon-edit"></i> 编辑资料</a></li>
+                                    <li><a href="#" onclick="showModifyPasswordPanel()"> <i class="icon-edit"></i>修改密码</a></li>
+                                </ul>
+
+                            </section>
+                        </aside>
+                        <aside class="profile-info col-lg-9">
+                            <section class="panel" id="showInfoSection">
+                                <div class="bio-graph-heading">
+                                    我的资料
+                                </div>
+                                <div class="panel-body bio-graph-info">
+                                    <h1>我的资料</h1>
+                                    <div class="row">
+                                        <div class="bio-row">
+                                            <p><span>用户名：</span> <%=user.username%></p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p><span>邮箱： </span> <%=user.email%></p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p><span>联系电话： </span> <%=user.phoneNumber%></p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p><span>操作权限： </span> <%=user.privilege%></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <strong>注：</strong><span>操作权限中0表示您为普通用户，1表示您为管理员用户</span>
+                                </div>
+                            </section>
+
+
+                            <section class="panel" id="editInfoSection" style="display: none;">
+                                <div class="bio-graph-heading">
+                                    编辑个人信息
+                                </div>
+                                <div class="panel-body bio-graph-info">
+                                    <h1>Modify Profile Info</h1>
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <label  class="col-lg-2 control-label">Username</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="modify_username" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-lg-2 control-label">Email</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="modify_email" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-lg-2 control-label">Telephone</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="modify_phoneNumber" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-lg-offset-2 col-lg-10">
+                                                <button type="submit" class="btn btn-success" onclick="modifyUserInfo()">Save</button>
+                                                <button type="button" class="btn btn-default">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+
+                            <section class="panel" id="editPasswordSection" style="display: none;">
+                                <div class="bio-graph-heading">
+                                    Modify Password
+                                </div>
+                                <div class="panel-body bio-graph-info">
+                                    <h1>Modify Password</h1>
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <label  class="col-lg-3 control-label">Current Password</label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="previous_password" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-lg-3 control-label">New Password</label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="modify_password" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-lg-3 control-label">Confirm Password</label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="modify_confirm_password" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <button type="submit" class="btn btn-success col-lg-offset-2" onclick="modifyPassword()">Save</button>
+                                                <button type="button" class="btn btn-default col-lg-offset-4">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+
+
+                        </aside>
+                    </div>
                 </div>
-            </div>
 
-            <div class="modal fade" id="modifyUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Modify User</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">userID</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="userID" name="userID" placeholder="" readonly="readonly">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Username</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="username" name="username" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Email</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="email" name="email" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Telephone</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="telephone" name="telephone" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Privilege</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="privilege" name="privilege" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-lg-12">
-                                        <button type="button" class="btn btn-default btn-lg btn-block" onclick="modifyUser()">Modify</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
 
-            <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body">是否确认删除<span id="delete_username"></span>用户？</div>
-                        <p class="hidden" id="delete_userID"></p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="deleteUser()">删除</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
+            </section>
 
-            <div class="modal fade" id="deleteNotebookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body">是否确认删除笔记：<code id="delete_notebookTitle"></code>?</div>
-                        <p class="hidden" id="delete_notebookID"></p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="deleteNotebook()">删除</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
 
         </section>
     </section>
@@ -398,104 +404,36 @@
 
 </script>
 
-<script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-        $('#example').dataTable( {
-            "aaSorting": [[ 4, "desc" ]]
-        } );
-    } );
-</script>
 
 <script>
-    function right(id,title) {
-        var e=window.event;
-        if(e.button=="2"){
-            document.getElementById("delete_id").innerText = id;
-            document.getElementById("delete_title").innerText = title;
 
-        }
+    function showEditProfilePanel(){
+        $("#showInfoSection").slideUp("slow");
+        $("#editPasswordSection").slideUp("slow");
+        $("#editInfoSection").slideDown("slow");
+        $('#modify_username').val("<%=user.username%>");
+        $('#modify_email').val("<%=user.email%>")
+        $('#modify_phoneNumber').val("<%=user.phoneNumber%>")
     }
 
-    function setDataToDialog(userID,username,email,telephone,privilege){
-        $('#userID').val(userID);
-        $("#username").val(username);
-        $("#email").val(email);
-        $("#telephone").val(telephone);
-        $("#privilege").val(privilege);
+    function showModifyPasswordPanel(){
+        $("#showInfoSection").slideUp("slow");
+        $("#editInfoSection").slideUp("slow");
+        $("#editPasswordSection").slideDown("slow");
     }
 
-    function setDataToDeleteDialog(userID,username){
-        document.getElementById("delete_userID").innerText =userID;
-        document.getElementById("delete_username").innerText =username;
-    }
-
-    function setDataToDeleteNotebookDialog(){
-        document.getElementById("delete_notebookID").innerText = document.getElementById("delete_id").innerText;
-        document.getElementById("delete_notebookTitle").innerText = document.getElementById("delete_title").innerText;
-    }
-
-
-    function modifyUser(){
-        var userID = document.getElementById("userID").value;
-        var username = document.getElementById("username").value;
-        var email = document.getElementById("email").value;
-        var phoneNumber = document.getElementById("telephone").value;
-        var privilege = document.getElementById("privilege").value;
-
+    function modifyUserInfo(){
+        var username=  $('#modify_username').val();
+        var email = $('#modify_email').val();
+        var phoneNumber = $('#modify_phoneNumber').val();
         $.ajax({
-            data: {userID: userID, username: username, email: email, phoneNumber: phoneNumber, privilege: privilege},
-            url: "/userManage/modifyUser",
-            dataType: 'json',
-//                        async: false,
-            contentType: 'application/json;charset=UTF-8',
-            cache: false,
-            timeout: 0,
-            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
-            headers: {
-                'Access-Control-Allow-Origin': '*'
+            data: {
+                email:email,
+                username:username,
+                phoneNumber:phoneNumber,
+                password:password
             },
-            success: function () {
-                alert("修改成功！");
-                window.location.reload();
-            },
-            error: function () {
-                alert("修改失败！");
-            }
-        });
-    }
-
-    function deleteUser() {
-        var userID = document.getElementById("delete_userID").innerText;
-        $.ajax({
-            data: {userID: userID},
-            url: "/userManage/deleteUser",
-            dataType: 'json',
-//                        async: false,
-            contentType: 'application/json;charset=UTF-8',
-            cache: false,
-            timeout: 0,
-            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            },
-            success: function () {
-                alert("删除成功！");
-                window.location.reload();
-            },
-            error: function () {
-                alert("删除失败！");
-            }
-        });
-
-
-    }
-
-    function deleteNotebook(){
-        var notebookID = document.getElementById("delete_notebookID").innerText;
-
-        $.ajax({
-            data: {notebookID: notebookID},
-            url: "/index/deleteNotebook",
+            url: "/myInfo/modifyUser",
             dataType: 'json',
 //                        async: false,
             contentType: 'application/json;charset=UTF-8',
@@ -506,15 +444,62 @@
                 'Access-Control-Allow-Origin': '*'
             },
             success: function (data) {
-                alert("删除成功！");
-                window.location.reload();
+                var result = JSON.parse(JSON.stringify(data));
+                if(result.message=='success'){
+                    alert("修改信息成功！")
+                }
             },
             error: function () {
-                alert("删除成功！");
-                window.location.reload();
+                alert("修改信息成功啦！");
+                window.location.reload()
             }
         });
+
     }
+
+    function modifyPassword(){
+        var previous_password = $('#previous_password').val();
+        var password = $('#modify_password').val();
+        var confirmPW = $('#modify_confirm_password').val();
+
+        if(previous_password=="<%=user.password%>"){
+            if(password==confirmPW){
+                $.ajax({
+                    data: {
+                        password:password
+                    },
+                    url: "/myInfo/modifyPassword",
+                    dataType: 'json',
+//                        async: false,
+                    contentType: 'application/json;charset=UTF-8',
+                    cache: false,
+                    timeout: 0,
+                    type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+                    headers: {
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    success: function (data) {
+                        var result = JSON.parse(JSON.stringify(data));
+                        if(result.message=='success'){
+                            alert("修改密码成功！")
+                        }
+                    },
+                    error: function () {
+                        alert("修改密码成功啦！");
+                        window.location.reload()
+                    }
+                });
+
+            }else{
+                alert("两次密码输入不一致！")
+            }
+        }else{
+            alert("原密码输入不正确！")
+        }
+
+
+    }
+
 
     function getCookieValue(key) {
         var data = decodeURI(document.cookie).split(";");

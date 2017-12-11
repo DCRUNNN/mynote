@@ -151,12 +151,24 @@
 
                     </ul>
                 </li>
-                <li>
-                    <a href="#">
-                        <i class="fa fa-envelope" aria-hidden="true"></i>
+
+                <li class="sub-menu">
+                    <a href="#" class="" >
+                        <i class="fa fa-envelope"></i>
                         <span>好友圈</span>
-                        <span class="label label-danger pull-right mail-info">2</span>
                     </a>
+                    <ul class="sub">
+                        <li>
+                            <a href="/index/myFriends">
+                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                <span>我的好友</span>
+                            </a>
+                        </li>
+                        <li><a href="/index/sharedPage">
+                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                            <span>分享笔记</span>
+                        </a></li>
+                    </ul>
                 </li>
 
                 <li>
@@ -168,7 +180,7 @@
                 </li>
 
                 <li>
-                    <a href="/index/addNotebook">
+                    <a href="/index/myInfo">
                         <i class="fa fa-cog" aria-hidden="true"></i>
                         <span >我的信息</span>
                         <span class="label label-danger pull-right mail-info">2</span>
@@ -217,7 +229,7 @@
                                         </div>
                                         <div class="btn-group col-md-4">
                                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" href="#addNotebookTagModal">添加</button>
-                                            <button type="button" class="btn btn-sm btn-danger" style="margin-left:20px" >删除</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteNotebookTagModal()" style="margin-left:20px" >删除</button>
                                         </div>
                                     </div>
                                 </div>
@@ -238,8 +250,8 @@
                                         <td><%=note2.notebookID%></td>
                                         <td><%=note2.title%></td>
                                         <td><%=note2.tag%></td>
-                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyUserModal" onclick="setDataToDialog('<%=user.userID%>','<%=user.username%>','<%=user.email%>','<%=user.phoneNumber%>','<%=user.privilege%>')"><i class="fa fa-edit">修改</i></button></td>
-                                        <td><button class="btn btn-warning" data-toggle="modal" href="#deleteUserModal" onclick="setDataToDeleteDialog('<%=user.userID%>','<%=user.username%>')"><i class="fa fa-close" >删除</i></button></td>
+                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyNotebookModal" onclick="showModifyNotebookDialog('<%=note2.notebookID%>','<%=note2.title%>','<%=note2.tag%>')"><i class="fa fa-edit">修改</i></button></td>
+                                        <td><button class="btn btn-warning" onclick="setDataToDeleteNotebookDialog('<%=note2.notebookID%>','<%=note2.title%>')"><i class="fa fa-close" >删除</i></button></td>
                                     </tr>
                                     <%})%>
                                     </tbody>
@@ -260,7 +272,7 @@
                                         </div>
                                         <div class="btn-group col-md-4">
                                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" href="#addPageTagModal">添加</button>
-                                            <button type="button" class="btn btn-sm btn-danger" style="margin-left:20px;" >删除</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="showDeletePageTagModal()" style="margin-left:20px;" >删除</button>
                                         </div>
 
                                     </div>
@@ -273,6 +285,7 @@
                                         <th style="text-align:center">所属笔记本</th>
                                         <th style="text-align: center">笔记标签</th>
                                         <th style="text-align:center">修改</th>
+                                        <th style="text-align:center">查看</th>
                                         <th style="text-align:center">删除</th>
                                     </tr>
                                     </thead>
@@ -284,8 +297,9 @@
                                         <td><%=page.title%></td>
                                         <td><%=page.notebookTitle%></td>
                                         <td><%=page.tag%></td>
-                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyUserModal" onclick="setDataToDialog('<%=user.userID%>','<%=user.username%>','<%=user.email%>','<%=user.phoneNumber%>','<%=user.privilege%>')"><i class="fa fa-edit">修改</i></button></td>
-                                        <td><button class="btn btn-warning" data-toggle="modal" href="#deleteUserModal" onclick="setDataToDeleteDialog('<%=user.userID%>','<%=user.username%>')"><i class="fa fa-close" >删除</i></button></td>
+                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyPageModal" onclick="showModifyPageDialog('<%=page.pageID%>','<%=page.title%>','<%=page.tag%>')"><i class="fa fa-edit">修改</i></button></td>
+                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page.pageID%>')"><i class="fa fa-book">查看</i></button></td>
+                                        <td><button class="btn btn-warning" onclick="setDataToDeletePageDialog('<%=page.pageID%>','<%=page.title%>')"><i class="fa fa-close" >删除</i></button></td>
                                     </tr>
                                     <%})%>
                                     </tbody>
@@ -299,60 +313,242 @@
 
             </div>
 
-            <div class="modal fade" id="addPageTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Add Tag of Page</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Page Tag</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="page_newTag" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-lg-12">
-                                        <button type="button" class="btn btn-default btn-lg btn-block" onclick="addPageTag()">Create</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
-
-            <div class="modal fade" id="addNotebookTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Add Tag of Notebook</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Notebook Tag</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="notebook_newTag" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-lg-12">
-                                        <button type="button" class="btn btn-default btn-lg btn-block" onclick="addNotebookTag()">Create</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
-
-
         </section>
+
+        <div class="modal fade" id="deleteNotebookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">是否确认删除笔记本：<code id="delete_notebookTitle"></code>?
+                        <br><br>
+                        <span><strong>若删除笔记本，则里面的笔记也会被删除！</strong></span>
+                    </div>
+                    <p class="hidden" id="delete_notebookID"></p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="deleteNotebook()">删除</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+
+        <div class="modal fade" id="deletePageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">是否确认删除笔记：<code id="delete_pageTitle"></code>?</div>
+                    <p class="hidden" id="delete_pageID"></p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="deletePage()">删除</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="deletePageTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">是否确认删除笔记标签：<code id="delete_pageTag"></code>?</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="deletePageTag()">删除</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="deleteNotebookTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">是否确认删除笔记本标签：<code id="delete_notebookTag"></code>?</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="deleteNotebookTag()">删除</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="modifyNotebookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Modify Page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">notebookID</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="modify_notebookID" name="modify_pageID" placeholder="" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">Notebook Title</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="modify_notebook_title" name="modify_page_title" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">Tag</label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" id="modify_notebook_tag">
+                                        <%notebookTags.forEach(function(notebookTag){%>
+                                        <option><%=notebookTag.value%></option>
+                                        <%})%>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" onclick="modifyNotebook()">Modify</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="modifyPageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Modify Page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">pageID</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="modify_pageID" name="modify_pageID" placeholder="" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">Page Title</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="modify_page_title" name="modify_page_title" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">Tag</label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" id="modify_page_tag">
+                                        <%pageTags.forEach(function(pageTag){%>
+                                        <option><%=pageTag.value%></option>
+                                        <%})%>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" onclick="modifyPage()">Modify</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="addPageTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Add Tag of Page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">Page Tag</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="page_newTag" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" onclick="addPageTag()">Create</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="addNotebookTagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Add Tag of Notebook</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label  class="col-lg-3 control-label">Notebook Tag</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="notebook_newTag" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" onclick="addNotebookTag()">Create</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="showPageContentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">笔记预览</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="panel">
+                                <div class="panel-heading">
+                                    <label for="pageTitle" class="col-sm-2 control-label">笔记名称</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="pageTitle" readonly="readonly" >
+                                    </div>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+
+
+                                    <div class="well" style="font-size:14px;" id="noteContent" >
+
+                                    </div>
+
+                                    <div class="panel-footer"><strong>Tips：</strong>更多具体操作请前往笔记页面进行处理</div>
+
+
+                                    <div class="btn-group">
+                                        <!--<button class="btn btn-success" id="savePageBT" onclick="">保存</button>-->
+                                        <!--<button id="calcelSavePageBT" class="btn btn-default" >截屏</button>-->
+                                        <!--<button id="calcelSavePageBT2" class="btn btn-default" >导出</button>-->
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
     </section>
     <!--main content end-->
 
@@ -416,6 +612,226 @@
 
 <script>
 
+    function showModifyPageDialog(pageID,title,tag){
+        $('#modify_pageID').val(pageID);
+        $("#modify_page_title").val(title);
+        $("#modify_page_tag").val(tag);
+    }
+
+    function showModifyNotebookDialog(notebookID,title,tag){
+        $('#modify_notebookID').val(notebookID);
+        $("#modify_notebook_title").val(title);
+        $("#modify_notebook_tag").val(tag);
+    }
+
+    function modifyNotebook(){
+        var notebookTitle=document.getElementById("modify_notebook_title").value;
+        var notebookID = document.getElementById("modify_notebookID").value;
+        var selectedTag = $('#modify_notebook_tag').children('option:selected').val();
+
+        $.ajax({
+            data: {notebookID:notebookID,title:notebookTitle,tag:selectedTag},
+            url: "/tagManage/modifyNotebook",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    alert("修改成功！")
+                    window.location.reload();
+                } else {
+                    alert("修改失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("修改失败！请刷新重试！");
+            }
+        });
+
+
+    }
+
+    function setDataToDeleteNotebookDialog(notebookID,title){
+        document.getElementById("delete_notebookTitle").innerText = title;
+        document.getElementById("delete_notebookID").innerText = notebookID;
+        $('#deleteNotebookModal').modal('show');
+
+    }
+
+    function setDataToDeletePageDialog(pageID,title){
+        document.getElementById("delete_pageTitle").innerText = title;
+        document.getElementById("delete_pageID").innerText = pageID;
+        $('#deletePageModal').modal('show');
+    }
+
+    function showDeletePageTagModal(){
+        var selectedTag = $('#page_tag').children('option:selected').val();
+        if(selectedTag=="所有"){
+            alert("拜托！请不要删除所有标签！")
+            return
+        }else{
+            document.getElementById("delete_pageTag").innerText = selectedTag;
+            $('#deletePageTagModal').modal('show');
+        }
+
+    }
+
+    function showDeleteNotebookTagModal(){
+        var selectedTag = $('#notebook_tag').children('option:selected').val();
+        if(selectedTag=="所有"){
+            alert("拜托！请不要删除所有标签！")
+            return
+        }else{
+            document.getElementById("delete_notebookTag").innerText = selectedTag;
+            $('#deleteNotebookTagModal').modal('show');
+        }
+
+    }
+
+    function deletePageTag(){
+        var tagValue = document.getElementById("delete_pageTag").innerText;
+
+        $.ajax({
+            data: {value:tagValue},
+            url: "/tagManage/deletePageTag",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                alert("删除笔记标签成功！")
+                window.location.reload();
+            },
+            error: function () {
+                alert("删除失败！请刷新重试！");
+            }
+        });
+
+    }
+
+    function deleteNotebookTag(){
+
+        var tagValue = document.getElementById("delete_notebookTag").innerText;
+
+        $.ajax({
+            data: {value:tagValue},
+            url: "/tagManage/deleteNotebookTag",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                alert("删除笔记标签成功！")
+                window.location.reload();
+            },
+            error: function () {
+                alert("删除失败！请刷新重试！");
+            }
+        });
+
+    }
+
+    function deletePage() {
+        var pageID = document.getElementById("delete_pageID").innerText;
+        $.ajax({
+            data: {pageID:pageID},
+            url: "/tagManage/deletePage",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                alert("删除笔记成功！")
+                window.location.reload();
+            },
+            error: function () {
+                alert("删除失败！请刷新重试！");
+            }
+        });
+    }
+
+    function deleteNotebook() {
+        var notebookID = document.getElementById("delete_notebookID").innerText;
+        $.ajax({
+            data: {notebookID:notebookID},
+            url: "/tagManage/deleteNotebook",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                alert("删除笔记本成功！")
+                window.location.reload();
+            },
+            error: function () {
+                alert("删除失败！请刷新重试！");
+            }
+        });
+    }
+
+
+
+    function modifyPage(){
+        var pageTitle=document.getElementById("modify_page_title").value;
+        var pageID = document.getElementById("modify_pageID").value;
+        var selectedTag = $('#modify_page_tag').children('option:selected').val();
+
+        $.ajax({
+            data: {pageID:pageID,title:pageTitle,tag:selectedTag},
+            url: "/tagManage/modifyPage",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    alert("修改成功！")
+                    window.location.reload();
+                } else {
+                    alert("修改失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("修改失败！请刷新重试！");
+            }
+        });
+
+
+    }
+
     function showNotebookByTag(){
         var selectedTag = $('#notebook_tag').children('option:selected').val();
 
@@ -441,8 +857,8 @@
                             "<tr><td>"+data[i].notebookID+
                             "</td><td>"+data[i].title+
                             "</td><td>"+data[i].tag+
-                            "</td><td>"+"<button class=\"btn btn-default\" data-toggle=\"modal\" href=\"#modifyUserModal\"><i class=\"fa fa-edit\">修改</i></button>"+
-                            "</td><td>"+"<button class=\"btn btn-warning\" data-toggle=\"modal\" href=\"#deleteUserModal\" ><i class=\"fa fa-close\" >删除</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-default\" data-toggle=\"modal\" href=\"#modifyNotebookModal\" onclick=\"showModifyNotebookDialog("+"'"+data[i].notebookID+"'"+","+"'"+data[i].title+"'"+","+"'"+data[i].tag+"'"+")\"><i class=\"fa fa-edit\">修改</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-warning\" onclick=\"setDataToDeleteNotebookDialog("+"'"+data[i].notebookID+"'"+","+"'"+data[i].title+"'"+")\"><i class=\"fa fa-close\" >删除</i></button>"+
                             "</td><tr>"
                         )
                     }
@@ -454,6 +870,36 @@
                 alert("获取笔记本信息失败！请刷新重试！");
             }
         });
+    }
+
+    function showPageContent(pageID){
+        $.ajax({
+            data: {pageID:pageID},
+            url: "/tagManage/showPageContent",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result=JSON.parse(JSON.stringify(data));
+                if(result.message=='success'){
+                    console.log(result.pageContent);
+                    $("#pageTitle").val(result.pageContent.title);
+                    document.getElementById("noteContent").innerHTML = result.pageContent.content;
+                    $('#showPageContentModal').modal('show');
+                }
+            },
+            error: function () {
+                alert("获取笔记信息失败！请刷新重试！");
+            }
+        });
+
+
     }
 
     function showPageByTag(){
@@ -487,8 +933,9 @@
                             "</td><td>"+data[i].title+
                             "</td><td>"+data[i].notebookID+
                             "</td><td>"+data[i].tag+
-                            "</td><td>"+"<button class=\"btn btn-default\" data-toggle=\"modal\" href=\"#modifyUserModal\"><i class=\"fa fa-edit\">修改</i></button>"+
-                            "</td><td>"+"<button class=\"btn btn-warning\" data-toggle=\"modal\" href=\"#deleteUserModal\" ><i class=\"fa fa-close\" >删除</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-default\" data-toggle=\"modal\" href=\"#modifyPageModal\" onclick=\"showModifyPageDialog("+"'"+data[i].pageID+"'"+","+"'"+data[i].title+"'"+","+"'"+data[i].tag+"'"+")\"><i class=\"fa fa-edit\">修改</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-default\" onclick=\"showPageContent("+data[i].pageID+")\"><i class=\"fa fa-book\">查看</i></button>"+
+                            "</td><td>"+"<button class=\"btn btn-warning\" onclick=\"setDataToDeletePageDialog("+"'"+data[i].pageID+"'"+","+"'"+data[i].title+"'"+")\"><i class=\"fa fa-close\" >删除</i></button>"+
                             "</td><tr>"
                         )
                     }
@@ -552,6 +999,7 @@
         });
 
     }
+
 
     function getCookieValue(key) {
         var data = decodeURI(document.cookie).split(";");

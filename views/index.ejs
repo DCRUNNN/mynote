@@ -15,6 +15,9 @@
   <link href="/stylesheets/bootstrap-reset.css" rel="stylesheet">
   <!--external css-->
   <link href="/stylesheets/font-awesome.css" rel="stylesheet" />
+  <link href="/stylesheets/tasks.css" rel="stylesheet">
+
+
   <!-- Custom styles for this template -->
   <link href="/stylesheets/style.css" rel="stylesheet">
   <link href="/stylesheets/style-responsive.css" rel="stylesheet" />
@@ -157,12 +160,23 @@
 
         </li>
 
-        <li>
-          <a href="#">
-            <i class="fa fa-envelope" aria-hidden="true"></i>
+        <li class="sub-menu">
+          <a href="#" class="" >
+            <i class="fa fa-envelope"></i>
             <span>好友圈</span>
-            <span class="label label-danger pull-right mail-info">2</span>
           </a>
+          <ul class="sub">
+            <li>
+              <a href="/index/myFriends">
+              <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+              <span>我的好友</span>
+            </a>
+            </li>
+            <li><a href="/index/sharedPage">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+              <span>分享笔记</span>
+            </a></li>
+          </ul>
         </li>
 
         <li>
@@ -174,7 +188,7 @@
         </li>
 
         <li>
-          <a href="">
+          <a href="/index/myInfo">
             <i class="fa fa-cog" aria-hidden="true"></i>
             <span >我的信息</span>
             <span class="label label-danger pull-right mail-info">2</span>
@@ -229,7 +243,7 @@
                   <div>
 
                     <div class="inbox-body" style="height: 430px">
-                      <button  class="btn btn-basic btn-sm pull-left" style="display: none" id="showMenuBT2" onclick="showMenu()">
+                      <button class="btn btn-basic btn-sm pull-left" style="display: none" id="showMenuBT2" onclick="showMenu()">
                         <i class="fa fa-arrow-left">返回</i>
                       </button>
                       <a class="btn btn-compose" data-toggle="modal" href="#addPageModal" onclick="getPageTags()">
@@ -258,18 +272,16 @@
                     <!--&lt;!&ndash;'Req_ajax("client get", "get")'&ndash;&gt;-->
                     <!--<button onclick=getData()>点我</button>-->
                     <form class="pull-right position" action="#">
+                      <button type="button" class="btn btn-primary" id="sharePageBT" style="display:none" onclick="showFriendList()">Share</button>
                       <button type="button" class="btn btn-primary" id="updateNoteBT" style="display: none">Update</button>
-                      <button type="button" class="btn btn-primary" id="showMenuBT" style="display: none" onclick="showMenu()">Return</button>
-                      <!--<div class="input-append">-->
-                        <!--<input type="text"  placeholder="Search Note" class="sr-input">-->
-                        <!--<button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>-->
-                      <!--</div>-->
+                      <button type="button" class="btn btn-primary" id="downloadToPdfBT" style="display: none" onclick="exportPDF()" >Print To PDF</button>
+                      <button type="button" class="btn btn-primary" id="showMenuBT" data-toggle="modal" href="#backWarningModal" style="display: none">Return</button>
                     </form>
                   </div>
                   <div class="inbox-body" id="notePanel">
                     <!--<img src="/images/gallery/1.jpg">-->
-                    <div class="row">
-                      <div class="well" style="color:cadetblue;font-size:14px;height: 380px" id="noteContent" >
+                    <div class="panel">
+                      <div class="panel-body" style="background:#dcdcdc;font-size:14px;" id="noteContent" >
                         <%=pageContent.content%>
                       </div>
                     </div>
@@ -285,14 +297,15 @@
                             <input type="text" class="form-control" id="newPageTitle">
                           </div>
 
-                          <textarea name="editor1" id="editor1" rows="10" cols="80">
+                          <textarea name="editor1" class="ckeditor" id="editor1" rows="10" cols="80">
                             <%=pageContent.content%>
                           </textarea>
+
                         </form>
 
                         <div class="btn-group">
-                          <button class="btn btn-success" id="savePageBT" onclick="savePage('<%=pageContent.pageID%>')">Save</button>
-                          <button id="calcelSavePageBT" class="btn btn-default" >Back</button>
+                          <button class="btn btn-success" id="savePageBT" onclick="savePage('<%=pageContent.pageID%>')">保存</button>
+                          <button id="calcelSavePageBT" class="btn btn-default" >截屏</button>
                         </div>
                       </div>
                     </div>
@@ -500,6 +513,59 @@
                 </div><!-- /.modal-dialog -->
               </div><!-- /.modal -->
 
+              <div class="modal fade" id="friendListModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" style="width: 460px;">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title">我的好友</h4>
+                    </div>
+                    <div class="modal-body">
+                      <section class="panel tasks-widget">
+
+                        <div class="panel-body">
+
+                          <div class="task-content">
+
+                            <ul class="task-list" id="friendUl">
+                            </ul>
+                          </div>
+
+                          <div class="row">
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" style="text-align:center;font-size: 16px">权限</label>
+                              <div class="col-md-8">
+                                <select class="form-control" id="privilege_tag">
+                                  <option>只读</option>
+                                  <option>读写</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+
+                          <br>
+                          <div class="add-task-row">
+                            <button class="btn btn-success btn-block" onclick="sharePage()">分享给Ta</button>
+                          </div>
+                        </div>
+                      </section>
+
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div><!-- /.modal -->
+
+              <div class="modal fade" id="backWarningModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-body">若现在离开，您的输入将不会被保存！是否确认离开？</div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" onclick="showMenu()">离开</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div>
 
               <div class="clearfix">&nbsp;</div>
             </div>
@@ -535,12 +601,8 @@
 <!--common script for all pages-->
 <script src="/javascripts/common-scripts.js"></script>
 
-<!--<script>-->
-    <!--$(document).ready(function () {-->
-        <!--alert("编译原理文档！");-->
-    <!--});-->
-<!--</script>-->
-
+<script src="/javascripts/jspdf.debug.js"></script>
+<script src="/javascripts/html2canvas.js"></script>
 
 <script>
 
@@ -564,6 +626,7 @@
 
 </script>
 
+
 <script>
     $("#updateNoteBT").click(function(){
         $("#notePanel").slideUp("slow");
@@ -575,6 +638,8 @@
 //        $("#newPageTitle").val("sdfdsf");
 //        getElementByValue("<%=pageContent.title%>");
         $("#updateNoteBT").hide();
+        $('#downloadToPdfBT').hide();
+        $('#sharePageBT').hide();
         $("#showMenuBT").show();
     });
 
@@ -744,6 +809,8 @@
                   $("#newPageTitle").val(result.pageContent.title);
                   CKEDITOR.instances.editor1.setData(result.pageContent.content);
                   getElementByValue(result.pageContent.title);
+                  $("#sharePageBT").show();
+                  $('#downloadToPdfBT').show();
                   $("#updateNoteBT").show();
                   $('#showMenuBT').hide();
               }else{
@@ -764,9 +831,12 @@
       $("#pageMenuBody").animate({'width': '25%'}, "slow");
       $("#showMenuBT").hide();
       $("#showMenuBT2").hide();
+      $('#downloadToPdfBT').show();
+      $('#sharePageBT').show();
       $("#updateNoteBT").show();
       $("#notePanel").slideDown("slow");
       $("#writeNotePanel").slideUp("slow");
+      $('#backWarningModal').modal('hide');
   }
 
   //右击NotebookMenu
@@ -1010,6 +1080,100 @@
       });
   }
 
+  function showFriendList(){
+      $.ajax({
+          data: {},
+          url: "/index/getAllFriends",
+          dataType: 'json',
+//                        async: false,
+          contentType: 'application/json;charset=UTF-8',
+          cache: false,
+          timeout: 0,
+          type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+          headers: {
+              'Access-Control-Allow-Origin': '*'
+          },
+          success: function (data) {
+              var result = JSON.parse(JSON.stringify(data));
+              if(result.message=='success'){
+                  var data = result.data;
+                  $("#friendUl").empty();
+                  for(var i=0;i<data.length;i++){
+                      $("#friendUl").append(
+                          "<li><div class=\"task-checkbox\"><input type=\"checkbox\" class=\"list-child\"  value=\"\"  />"+
+                          "</div class=\"task-title\">"+"<span id='checkFriendName' class=\"task-title-sp\">"+data[i].friendUsername+
+                          "</span><p style='display: none'>"+data[i].friendID+
+                          "</p></div></li>"
+                      )
+                  }
+                  $('#friendListModal').modal('show');
+                  $('.list-child').change(function() {
+                      if ($(this).is(':checked')) {
+                          $(this).parents('li').addClass("task-done");
+                      } else {
+                          $(this).parents('li').removeClass("task-done");
+                      }
+                  });
+              }else{
+                  alert("获取好友列表失败，请刷新重试！")
+              }
+
+          },
+          error: function () {
+              alert("获取好友列表失败，请刷新重试！");
+          }
+      });
+
+
+  }
+
+  function sharePage(){
+
+      var cookie = getCookieValue("pageContent");
+      var temp1 = cookie.split('"pageID"');
+      var temp2 = temp1[1].split('%2C');
+      var temp3 = temp2[0].split('%3A');
+      var pageID = temp3[1];
+
+      var privilege= $('#privilege_tag').children('option:selected').val();
+
+      var usernameList=$('.task-done').children('span')
+      var userIDList=$('.task-done').children('p')
+
+      var result  =new Array();
+
+      for(var i=0;i<usernameList.length;i++){
+          var temp = {
+              friendUsername: usernameList[i].innerHTML,
+              friendID: userIDList[i].innerHTML
+          };
+          result.push(temp);
+      }
+
+      $.ajax({
+          data: {userList:result,title:document.getElementById("newPageTitle").value,content:document.getElementById("noteContent").innerHTML,privilege:privilege,pageID:pageID},
+          url: "/index/sharePage",
+          dataType: 'json',
+//                        async: false,
+          contentType: 'application/json;charset=UTF-8',
+          cache: false,
+          timeout: 0,
+          type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+          headers: {
+              'Access-Control-Allow-Origin': '*'
+          },
+          success: function () {
+              alert("分享成功！可以到好友圈的分享笔记中查看！");
+              $('#friendListModal').modal('hide');
+
+          },
+          error: function () {
+              alert("分享失败，请刷新重试！");
+          }
+      });
+
+
+  }
 
 </script>
 
@@ -1017,14 +1181,15 @@
     // Replace the <textarea id="editor1"> with a CKEditor
     // instance, using default configuration.
     CKEDITOR.replace( 'editor1' );
+
 </script>
 
 <script>
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         var cookieValue = getCookieValue('user=');
-        var privilege = cookieValue.substr(cookieValue.length-2).charAt(0);
-        if(privilege==1) {
+        var privilege = cookieValue.substr(cookieValue.length - 2).charAt(0);
+        if (privilege == 1) {
             $("#nav-accordion").append('<li>\n' +
                 '          <a class="active" href="/index/userManage">\n' +
                 '            <i class="fa fa-cog" aria-hidden="true"></i>\n' +
@@ -1034,18 +1199,7 @@
                 '        </li>')
         }
 
-//        console.log(data)
-//        var content = document.getElementById("noteContent").innerHTML.trim();
-//        console.log(content);
-//        if(content=='请选择笔记！'){
-//            $('#updateNoteBT').hide()
-//        }else if(content==''){
-//            $('#updateNoteBT').hide();
-//            $('#showMenuBT').show()
-////            getElementByValue("<%=pageContent.title%>");
-//        }else{
-//            $('#updateNoteBT').show()
-//        }
+        document.getElementById("noteContent").innerHTML = "<%=pageContent.content%>";
     });
 
     function getCookieValue(key) {
@@ -1055,6 +1209,19 @@
                 return data[i].trim();
             }
         }
+    }
+
+    function exportPDF(){
+        var pdf = new jsPDF('p', 'mm', 'a4');
+        var print_content = $('#noteContent');
+        var filename = document.getElementById("newPageTitle").value+'.pdf';
+        console.log($('#noteContent'));
+        $('#noteContent').css("font-size", "30px")
+        pdf.addHTML($('#noteContent'), function(){
+            pdf.output("save", filename)
+            $('#noteContent').css("font-size", "14px")
+        })
+
     }
 
 </script>

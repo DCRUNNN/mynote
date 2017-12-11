@@ -122,6 +122,194 @@ router.get('/addPageTag', function(request, response, next) {
 
 });
 
+router.get('/showPageContent',function(request,response,next) {
+    var pageID = request.query.pageID;
+    Page.findOne({
+        where:{
+            pageID:pageID
+        }
+    }).then(function(message){
+        var pageResult = JSON.stringify(message);
+        pageResult = JSON.parse(pageResult);
+        response.cookie('pageContent', pageResult);
+        response.json({message: 'success',pageContent:pageResult});
+        // response.render('index', { title: 'My Note', user:request.cookies.user, note:request.cookies.notebook, pageMenu:request.cookies.pageMenu,pageContent:pageResult,currentNotebook:request.cookies.currentNotebook});
+
+    });
+
+})
+
+router.get('/getAllPageTag',function(request,response,next) {
+    Tag.findAll({
+        where:{
+            type:"笔记",
+            userID:request.cookies.user.userID
+        }
+    }).then(function(message){
+        var pageTagResult=JSON.stringify(message);
+        response.cookie('pageTagResult', JSON.parse(pageTagResult));
+        response.json({
+            message: 'success',
+            data: JSON.parse(pageTagResult)
+        });
+
+    });
+})
+
+router.get('/modifyPage',function (request,response,next) {
+
+    Page.update({
+        title:request.query.title,
+        tag:request.query.tag,
+    }, {
+        where: {
+            pageID: request.query.pageID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            return  response.json({
+                message:'success',
+            })
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+})
+
+router.get('/modifyNotebook',function (request,response,next) {
+
+    Notebook.update({
+        title:request.query.title,
+        tag:request.query.tag,
+    }, {
+        where: {
+            notebookID: request.query.notebookID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            return  response.json({
+                message:'success',
+            })
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+})
+
+router.get('/deleteNotebook',function (request,response,next) {
+    Notebook.destroy({
+        where: {
+            notebookID: request.query.notebookID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            Page.destroy({
+                where: {
+                    notebookID: request.query.notebookID
+                }
+            }).then(function (message) {
+                // var pageResult = JSON.stringify(message);
+                var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+                if (success == true) {
+                    return  response.json({
+                        message:'success'
+                    })
+                } else {
+                    return  response.json({
+                        message:'error'
+                    })
+                }
+            });
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+
+})
+
+
+router.get('/deletePage',function (request,response,next) {
+    Page.destroy({
+        where: {
+            pageID: request.query.pageID
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            return  response.json({
+                message:'success'
+            })
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+
+})
+
+router.get('/deletePageTag',function (request,response,next) {
+    Tag.destroy({
+        where: {
+            value: request.query.value,
+            type:"笔记"
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            return  response.json({
+                message:'success'
+            })
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+
+})
+
+router.get('/deleteNotebookTag',function (request,response,next) {
+    Tag.destroy({
+        where: {
+            value: request.query.value,
+            type:"笔记本"
+        }
+    }).then(function (message) {
+        // var pageResult = JSON.stringify(message);
+        var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+        if (success == true) {
+            return  response.json({
+                message:'success'
+            })
+        } else {
+            return  response.json({
+                message:'error'
+            })
+        }
+    });
+
+
+})
 
 
 module.exports = router;

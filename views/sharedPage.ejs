@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:html="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mosaddek">
+    <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <title>My Note</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/bootstrap-reset.css" rel="stylesheet">
+    <!--external css-->
+    <link href="/stylesheets/font-awesome.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/stylesheets/owl.carousel.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/demo_table.css" />
+
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <link href="/stylesheets/style-responsive.css" rel="stylesheet" />
+    <!--图标样式-->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css"/>
+
+    <script src="/plugins/ckeditor/ckeditor.js"></script>
+
+    <style>
+        .selected{font-weight:bold; background-color:#c7cbd4;}
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+    <!--[if lt IE 9]>
+    <!--<script src="js/html5shiv.js"></script>-->
+    <!--<script src="js/respond.min.js"></script>-->
+    <![endif]-->
+</head>
+
+<body class="login-body" style="background-image: url('/images/back3.jpg');background-size: 100%">
+
+<section id="container" >
+    <!--header start-->
+    <header class="header white-bg">
+
+        <div class="sidebar-toggle-box">
+            <div data-original-title="Toggle Navigation" data-placement="right" class="fa fa-reorder icon-reorder tooltips"></div>
+        </div>
+
+        <a href="/" class="logo"><span><%= title %></span></a>
+
+        <div class="nav notify-row" id="top_menu">
+            <!--  notification start -->
+            <ul class="nav top-menu">
+                <!-- settings start -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                        <span class="badge bg-success">6</span>
+                    </a>
+                    <ul class="dropdown-menu extended tasks-bar">
+                        <div class="notify-arrow notify-arrow-green"></div>
+                        <li>
+                            <p class="green">You have 6 pending tasks</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- settings end -->
+                <!-- inbox dropdown start-->
+                <li id="header_inbox_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span class="badge bg-important">5</span>
+                    </a>
+                    <ul class="dropdown-menu extended inbox">
+                        <div class="notify-arrow notify-arrow-red"></div>
+                        <li>
+                            <p class="red">You have 5 new messages</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- inbox dropdown end -->
+                <!-- notification dropdown start-->
+                <li id="header_notification_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+
+                        <i class="fa fa-bell-o" aria-hidden="true"></i>
+                        <span class="badge bg-warning">7</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <div class="notify-arrow notify-arrow-yellow"></div>
+                        <li>
+                            <p class="yellow">You have 7 new notifications</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- notification dropdown end -->
+            </ul>
+            <!--  notification end -->
+        </div>
+        <div class="top-nav ">
+            <!--search & user info start-->
+            <ul class="nav pull-right top-menu">
+                <li>
+                    <input type="text" class="form-control search" placeholder="Search">
+                </li>
+                <!-- user login dropdown start-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <img alt="" src="/images/avatar-mini.jpg">
+                        <span class="username"> <%= user.username %> </span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu extended logout">
+                        <div class="log-arrow-up"></div>
+                        <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
+                        <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>
+                        <li><a href="/"><i class="fa fa-key"></i> Log Out</a></li>
+                    </ul>
+                </li>
+                <!-- user login dropdown end -->
+            </ul>
+            <!--search & user info end-->
+        </div>
+    </header>
+
+    <!--sidebar start-->
+    <aside>
+
+        <div id="sidebar"  class="nav-collapse ">
+
+            <!-- sidebar menu start-->
+            <ul class="sidebar-menu" id="nav-accordion">
+
+                <li class="sub-menu">
+                    <a href="#" >
+                        <i class="fa fa-book" aria-hidden="true"></i>
+                        <span>我的笔记本</span>
+                    </a>
+
+                    <ul class="sub" id="notebook_ul" role="menu">
+                        <%note.forEach(function(note2){%>
+                        <li class="sub-menu"  role="presentation" id="context" data-toggle="context" data-target="#context-menu" onmousedown="right('<%=note2.notebookID%>','<%=note2.title%>')">
+                            <a href="/index/showPageMenu/<%=note2.notebookID%>">
+                                <i class="fa fa-book" aria-hidden="true"></i>
+                                <span id="<%=note2.notebookID%>"><%=note2.title%></span>
+                            </a>
+                        </li>
+                        <%})%>
+
+                    </ul>
+                </li>
+
+                <li class="sub-menu">
+                    <a href="#" class="active" >
+                        <i class="fa fa-envelope"></i>
+                        <span>好友圈</span>
+                    </a>
+                    <ul class="sub">
+                        <li>
+                            <a href="/index/myFriends">
+                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                <span>我的好友</span>
+                            </a>
+                        </li>
+                        <li><a href="/index/sharedPage">
+                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                            <span>分享笔记</span>
+                        </a></li>
+                    </ul>
+                </li>
+
+
+                <li>
+                    <a href="/index/tagManage">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <span>标签管理</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index/myInfo">
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+                        <span >我的信息</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="active" href="/index/userManage">
+                        <i class="fa fa-qq" aria-hidden="true"></i>
+                        <span >账户管理</span>
+                        <span class="label label-danger pull-right mail-info">2</span>
+                    </a>
+                </li>
+
+            </ul>
+
+            <div id="context-menu">
+                <ul class="dropdown-menu" role="menu">
+                    <li data-toggle="modal" href="#deleteNotebookModal" onclick="setDataToDeleteNotebookDialog();$('#deleteNotebookModal').modal('show');"><a>删除</a></li>
+                    <li class="hidden"><a id="delete_id">Another action</a></li>
+                    <li class="hidden"><a id="delete_title">Another action</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+    </aside>
+    <!--sidebar end-->
+
+    <!--main content start-->
+    <section id="main-content" >
+        <section class="wrapper">
+            <section class="panel" id="mainPanel">
+                <header class="panel-heading">
+                    分享笔记
+                    <span class="tools pull-right">
+                        <a class="fa fa-arrow-down" href="javascript:;"></a>
+                        <a class="fa fa-remove" href="javascript:;"></a>
+                    </span>
+                </header>
+                </div>
+                <br>
+                <div class="panel-body">
+                    <ul id="myTab" class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#home" data-toggle="tab">
+                                我收到的分享
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#ios" data-toggle="tab">
+                            我发出的分享
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade in active" id="home">
+                            <div class="adv-table">
+                                <table class="display table table-bordered table-striped table-condensed" id="example" style="text-align:center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align:center">分享编号</th>
+                                        <th style="text-align:center">笔记名称</th>
+                                        <th style="text-align:center" title="0表示只可读，1表示可读写">我的权限</th>
+                                        <th style="text-align:center">来自</th>
+                                        <th style="text-align:center">查看</th>
+                                        <th style="text-align:center">删除</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%toMeSharedPage.forEach(function(page1){%>
+                                    <tr class="gradeA">
+                                        <td><%=page1.sharedID%></td>
+                                        <td><%=page1.title%></td>
+                                        <td><%=page1.privilege%></td>
+                                        <td><%=page1.fromUsername%></td>
+                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page1.sharedID%>')"><i class="fa fa-edit">查看</i></button></td>
+                                        <td><button class="btn btn-warning" onclick="setDataToDeletePageDialog('<%=page1.sharedID%>','<%=page1.title%>')"><i class="fa fa-close" >删除</i></button></td>
+                                    </tr>
+                                    <%})%>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                        <div class="tab-pane fade" id="ios">
+                            <div class="adv-table">
+                                <table class="display table table-bordered table-striped table-condensed" id="example2" style="text-align:center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align:center">分享编号</th>
+                                        <th style="text-align:center">笔记名称</th>
+                                        <th style="text-align:center" title="0表示只可读，1表示可读写">对方权限</th>
+                                        <th style="text-align:center">分享至</th>
+                                        <th style="text-align:center">查看</th>
+                                        <th style="text-align:center">修改权限</th>
+                                        <th style="text-align:center">删除</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%fromMeSharedPage.forEach(function(page2){%>
+                                    <tr class="gradeA">
+                                        <td><%=page2.sharedID%></td>
+                                        <td><%=page2.title%></td>
+                                        <td><%=page2.privilege%></td>
+                                        <td><%=page2.toUsername%></td>
+                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page2.sharedID%>')"><i class="fa fa-edit">查看</i></button></td>
+                                        <td><button class="btn btn-default" onclick="showModifyPrivilegeModal('<%=page2.sharedID%>')"><i class="fa fa-edit">修改</i></button></td>
+                                        <td><button class="btn btn-warning" onclick="setDataToDeletePageDialog('<%=page2.sharedID%>','<%=page2.title%>')"><i class="fa fa-close" >删除</i></button></td>
+                                    </tr>
+                                    <%})%>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel" id="showContentPanel" style="display: none">
+                <header class="panel-heading">
+                    查看笔记
+                    <span class="tools pull-right">
+                        <a class="fa fa-arrow-down" href="javascript:;"></a>
+                        <a class="fa fa-remove" href="javascript:;"></a>
+                    </span>
+                </header>
+                <div class="panel-body" style="height: 380px">
+                    <h3 id="pageTitle"></h3>
+                        <div class="panel-body" style="background:#dcdcdc;font-size:14px" id="noteContent">
+
+                        </div>
+
+                    <p id="getShareID" style="display: none;"></p>
+                    <p id="getPageID" style="display: none;"></p>
+                    <p id="checkIsModify" style="display: none;"></p>
+
+                </div>
+
+                <div class="panel-footer">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="backToMainContent()">返回</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="modify_share_pageBT" style="display: none" onclick="showModifyPagePanel()">修改</button>
+                    <button id="exportToPDFBT" class="btn btn-sm btn-primary" onclick="exportPDF()">导出</button>
+                </div>
+
+            </section>
+
+            <section id="writeNotePanel" class="content writeNote-section" style="display: none">
+
+                <div class="panel">
+                    <div class="panel-body">
+                        <form style="color: black">
+                            <label for="newPageTitle" class="col-sm-2 control-label">笔记名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="newPageTitle">
+                            </div>
+
+                            <textarea name="editor1" id="editor1" rows="10" cols="80">
+                            </textarea>
+                        </form>
+
+                        <div class="btn-group">
+                            <button class="btn btn-success" id="savePageBT" onclick="savePage()">保存</button>
+                            <button id="calcelSavePageBT" class="btn btn-default" >截屏</button>
+                            <button id="backBT" class="btn btn-default" data-toggle="modal" href="#backWarningModal">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </section>
+
+        <div class="modal fade" id="modifyPrivilegeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">修改对方权限</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label  class="col-md-2 control-label">对方权限</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" id="modify_privilege">
+                                        <option>只读</option>
+                                        <option>读写</option>
+                                    </select>
+                                </div>
+                                <p class="hidden" id="modify_sharedID"></p>
+
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" onclick="modifyPrivilege()">Modify</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="deleteSharePageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">是否确认删除分享笔记：<code id="delete_pageTitle"></code>?</div>
+                    <p class="hidden" id="delete_sharedPageID"></p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="deleteSharedPage()">删除</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="backWarningModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">若现在离开，您的输入将不会被保存！是否确认离开？</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="backToShowContent()">离开</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+    </section>
+    <!--main content end-->
+
+
+    <!--footer start-->
+
+    <!--footer end-->
+</section>
+
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="/javascripts/jquery-3.2.1.min.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="/javascripts/jquery.dcjqaccordion.2.7.js"></script>
+<script src="/javascripts/owl.carousel.js" ></script>
+<script src="/javascripts/jquery.scrollTo.min.js"></script>
+<script src="/javascripts/jquery.nicescroll.js" type="text/javascript"></script>
+
+<script src="/javascripts/jquery.customSelect.min.js" ></script>
+<script type="text/javascript" src="/javascripts/jquery.dataTables.js"></script>
+<script src="/javascripts/respond.min.js" ></script>
+<script src="/plugins/bootstrap-contextmenu.js"></script>
+
+<!--common script for all pages-->
+<script src="/javascripts/common-scripts.js"></script>
+
+<script src="/javascripts/jspdf.debug.js"></script>
+<script src="/javascripts/html2canvas.js"></script>
+
+<script>
+
+    //owl carousel
+    $(document).ready(function() {
+        $("#owl-demo").owlCarousel({
+            navigation : true,
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem : true,
+            autoPlay:true
+
+        });
+    });
+
+    //custom select box
+
+    $(function(){
+        $('select.styled').customSelect();
+    });
+
+</script>
+
+
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#example').dataTable( {
+            "aaSorting": [[ 4, "desc" ]]
+        } );
+
+        $('#example2').dataTable( {
+            "aaSorting": [[ 4, "desc" ]]
+        } );
+    } );
+
+    CKEDITOR.replace( 'editor1' );
+
+</script>
+
+<script>
+
+    function backToMainContent(){
+        var isModify = document.getElementById("checkIsModify").innerText;
+        if(isModify=="True"){
+            window.location.reload();
+        }else{
+            $('#showContentPanel').slideUp('slow');
+            $('#writeNotePanel').slideUp('slow');
+            $('#mainPanel').slideDown('slow');
+        }
+    }
+
+    function showModifyPagePanel(){
+        $('#showContentPanel').slideUp('slow');
+        $('#mainPanel').slideUp('slow');
+        $('#newPageTitle').val(document.getElementById("pageTitle").innerHTML)
+        CKEDITOR.instances.editor1.setData(document.getElementById("noteContent").innerHTML);
+        $('#writeNotePanel').slideDown('slow');
+    }
+
+    function showModifyPrivilegeModal(sharedID){
+        document.getElementById("modify_sharedID").innerText = sharedID;
+        $('#modifyPrivilegeModal').modal('show');
+    }
+
+    function showPageContent(sharedID){
+
+        $.ajax({
+            data: {sharedID:sharedID},
+            url: "/sharedPage/getPageContent",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    $('#mainPanel').slideUp('slow');
+                    document.getElementById("noteContent").innerHTML = result.data.content;
+                    document.getElementById("pageTitle").innerHTML = result.data.title;
+                    document.getElementById("getShareID").innerText = result.data.sharedID;
+                    document.getElementById("getPageID").innerText = result.data.pageID;
+                    if(result.data.privilege=='读写'){
+                        document.getElementById("modify_share_pageBT").style.display='inline';
+                    }else{
+                        document.getElementById("modify_share_pageBT").style.display='none';
+                    }
+
+                    $('#showContentPanel').slideDown('slow');
+
+                } else {
+                    alert("获取内容失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("获取内容失败！请刷新重试！");
+            }
+        });
+
+    }
+
+    function savePage(){
+        var content = CKEDITOR.instances.editor1.getData();
+        var title=$('#newPageTitle').val();
+        var sharedID = document.getElementById("getShareID").innerText;
+        var pageID = document.getElementById("getPageID").innerText;
+
+        $.ajax({
+            data: {sharedID:sharedID,title:title,content:content,pageID:pageID},
+            url: "/sharedPage/updatePage",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    alert("保存笔记成功！");
+//                    window.location.reload();
+                    document.getElementById("noteContent").innerHTML = content;
+                    document.getElementById("pageTitle").innerHTML = title;
+                    document.getElementById("checkIsModify").innerText = "True";
+
+                    $("#writeNotePanel").slideUp("slow");
+                    $("#showContentPanel").slideDown("slow");
+
+                } else {
+                    alert("修改失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("修改失败！请刷新重试！");
+            }
+        });
+    }
+
+    function modifyPrivilege(){
+        var selectedTag = $('#modify_privilege').children('option:selected').val();
+        var sharedID = document.getElementById("modify_sharedID").innerText;
+
+        $.ajax({
+            data: {sharedID:sharedID,privilege:selectedTag},
+            url: "/sharedPage/modifyPrivilege",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    alert("修改对方权限成功！");
+                    window.location.reload();
+
+                } else {
+                    alert("修改失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("修改失败！请刷新重试！");
+            }
+        });
+
+    }
+
+    function keyListener(){
+        if (event.keyCode==13)  //回车键的键值为13
+            showSearchResult();
+    }
+
+    function exportPDF(){
+        var pdf = new jsPDF('p', 'mm', 'a4');
+        var print_content = $('#noteContent');
+        var filename = document.getElementById("pageTitle").innerHTML+'.pdf';
+        console.log($('#noteContent'));
+        $('#noteContent').css("font-size", "30px")
+        pdf.addHTML($('#noteContent'), function(){
+            pdf.output("save", filename)
+            $('#noteContent').css("font-size", "14px")
+        })
+
+    }
+
+    function getCookieValue(key) {
+        var data = decodeURI(document.cookie).split(";");
+        for(var i=0;i<data.length;i++) {
+            if(data[i].trim().indexOf(key)==0) {
+                return data[i].trim();
+            }
+        }
+    }
+
+    function setDataToDeletePageDialog(sharedID,title){
+        document.getElementById("delete_pageTitle").innerHTML = title;
+        document.getElementById("delete_sharedPageID").innerHTML = sharedID;
+        $('#deleteSharePageModal').modal('show');
+    }
+
+    function deleteSharedPage(){
+
+        var sharedID = document.getElementById("delete_sharedPageID").innerHTML;
+
+        $.ajax({
+            data: {sharedID:sharedID},
+            url: "/sharedPage/deletePage",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    alert("删除笔记成功！");
+                    window.location.reload()
+                } else {
+                    alert("删除失败！请刷新重试！");
+                }
+            },
+            error: function () {
+                alert("删除失败！请刷新重试！");
+            }
+        });
+    }
+
+    function backToShowContent(){
+        $('#mainPanel').slideUp('slow');
+        $('#writeNotePanel').slideUp('slow');
+        $('#showContentPanel').slideDown('slow');
+        $('#backWarningModal').modal('hide');
+    }
+
+</script>
+
+</body>
+</html>

@@ -153,13 +153,13 @@
                 </li>
 
                 <li class="sub-menu">
-                    <a href="#" class="" >
+                    <a href="#" class="active" >
                         <i class="fa fa-envelope"></i>
                         <span>好友圈</span>
                     </a>
                     <ul class="sub">
                         <li>
-                            <a href="/index/myFriends">
+                            <a href="#">
                                 <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                                 <span>我的好友</span>
                             </a>
@@ -171,7 +171,6 @@
                     </ul>
                 </li>
 
-
                 <li>
                     <a href="/index/tagManage">
                         <i class="fa fa-tags" aria-hidden="true"></i>
@@ -181,7 +180,7 @@
                 </li>
 
                 <li>
-                    <a href="/index/userManage">
+                    <a href="/index/myInfo">
                         <i class="fa fa-cog" aria-hidden="true"></i>
                         <span >我的信息</span>
                         <span class="label label-danger pull-right mail-info">2</span>
@@ -215,133 +214,129 @@
     <section id="main-content" >
         <section class="wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <!--timeline start-->
-                    <section class="panel" >
-                        <header class="panel-heading">
-                            账户管理
-                        </header>
-                        <div class="panel-body">
-                            <div class="adv-table">
-                                <table class="display table table-bordered table-striped" id="example" style="text-align:center">
-                                    <thead>
-                                    <tr>
-                                        <th style="text-align:center">用户编号</th>
-                                        <th style="text-align:center">用户名</th>
-                                        <th style="text-align:center">邮箱</th>
-                                        <th style="text-align:center">电话号码(s)</th>
-                                        <th style="text-align:center">权限</th>
-                                        <th style="text-align:center">修改</th>
-                                        <th style="text-align:center">删除</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <%users.forEach(function(user){%>
-                                    <tr class="gradeA">
-                                        <td><%=user.userID%></td>
-                                        <td><%=user.username%></td>
-                                        <td><%=user.email%></td>
-                                        <td><%=user.phoneNumber%></td>
-                                        <td><%=user.privilege%></td>
-                                        <td><button class="btn btn-default" data-toggle="modal" href="#modifyUserModal" onclick="setDataToDialog('<%=user.userID%>','<%=user.username%>','<%=user.email%>','<%=user.phoneNumber%>','<%=user.privilege%>')"><i class="fa fa-edit">修改</i></button></td>
-                                        <td><button class="btn btn-warning" data-toggle="modal" href="#deleteUserModal" onclick="setDataToDeleteDialog('<%=user.userID%>','<%=user.username%>')"><i class="fa fa-close" >删除</i></button></td>
-                                    </tr>
-                                    <%})%>
-                                    </tbody>
-                                    <!--<tfoot>-->
-                                    <!--<tr>-->
-                                        <!--<th>用户名</th>-->
-                                        <!--<th>邮箱</th>-->
-                                        <!--<th>电话号码(s)</th>-->
-                                        <!--<th class="hidden-phone">权限</th>-->
-                                        <!--<th>修改</th>-->
-                                        <!--<th>删除</th>-->
-                                    <!--</tr>-->
-                                    <!--</tfoot>-->
-                                </table>
+            <section class="panel">
+                <header class="panel-heading">
+                    Friends
+                    <span class="tools pull-right">
+                        <a class="fa fa-arrow-down" href="javascript:;"></a>
+                        <a class="fa fa-remove" href="javascript:;"></a>
+                    </span>
+                </header>
+                <form class="bs-example bs-example-form" role="form" action="#">
+                    <div class="row">
+                        <div class="col-md-6 pull-right">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="search_username" placeholder="Search User"  onkeydown="keyListener()">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" onclick="showSearchResult()" value="Search">Search</button>
+                                </span>
                             </div>
-
                         </div>
-                    </section>
+                    </div>
+                </form>
                 </div>
-            </div>
+                <br>
+                <div class="panel-body">
+                    <div class="timeline-messages">
 
-            <div class="modal fade" id="modifyUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <%allFriends.forEach(function(friend){%>
+                        <div class="msg-time-chat">
+                            <a href="#" class="message-img"><img class="avatar" src="/images/avatar-mini.jpg" alt=""></a>
+                            <div class="message-body msg-in">
+                                <span class="arrow"></span>
+                                <div class="text">
+                                    <p class="attribution">
+                                        <label class="control-label" style="font-size:14px">好友昵称：</label>
+                                        <a href="#" style="font-size:20px">
+                                            <strong><%=friend.friendUsername%></strong>
+                                        </a>
+                                    </p>
+                                  <address>
+                                      <label class="control-label">好友邮箱：</label>
+                                      <a href="mailto:#"><%=friend.friendEmail%></a><br>
+                                      <label class="control-label">好友手机号：</label>
+                                      <a href="mailto:#"><%=friend.friendPhoneNumber%></a>
+                                  </address>
+                                    <button class="btn btn-danger" onclick="showDeleteFriendDialog('<%=friend.friendID%>','<%=friend.friendUsername%>')">删除好友</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <%})%>
+
+
+                    </div>
+                    <div class="chat-form">
+                        <div class="input-cont ">
+                            <input type="text" class="form-control col-lg-12" placeholder="Type a message here...">
+                        </div>
+                        <div class="form-group">
+                            <div class="pull-right chat-features">
+                                <a href="javascript:;">
+                                    <i class="fa fa-camera"></i>
+                                </a>
+                                <a href="javascript:;">
+                                    <i class="fa fa-link"></i>
+                                </a>
+                                <a class="btn btn-danger" href="javascript:;">Send</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <div class="modal fade" id="searchResultModal" style="display: none" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Modify User</h4>
+                            <h4 class="modal-title">搜索结果</h4>
                         </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">userID</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="userID" name="userID" placeholder="" readonly="readonly">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Username</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="username" name="username" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Email</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="email" name="email" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Telephone</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="telephone" name="telephone" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-lg-3 control-label">Privilege</label>
-                                    <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="privilege" name="privilege" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-lg-12">
-                                        <button type="button" class="btn btn-default btn-lg btn-block" onclick="modifyUser()">Modify</button>
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="modal-body profile-nav alt blue-border">
+                            <div class="user-heading">
+                                <a href="#">
+                                    <img alt="" src="/images/profile-avatar.jpg">
+                                </a>
+                                <h1 id="searchResult_username"></h1>
+                            </div>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                <li style="display: none"><a href="#" id="searchResult_userID">用户ID：<i class="fa fa-envelop"></i></a></li>
+                                <li><a href="#" ><i class="fa fa-envelope"id="searchResult_email"></i></a></li>
+                                <li><a href="#" ><i class="fa fa-phone" id="searchResult_phoneNumber"></i></a></li>
+                            </ul>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-md btn-block" onclick="addUser()">加为好友</button>
+                            </div>
+
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
 
-            <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="deleteFriendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-body">是否确认删除<span id="delete_username"></span>用户？</div>
-                        <p class="hidden" id="delete_userID"></p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="deleteUser()">删除</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Delete Friend</h4>
                         </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <br>
+                                <p id="delete_userID" style="display: none"></p>
+                                <p class="col-lg-12">是否确认删除好友：<strong id="delete_username" style="font-size: 16px"></strong>?</p>
+                                <button class="btn btn-default btn-block" onclick="deleteFriend()">删除</button>
+                            </div>
 
-            <div class="modal fade" id="deleteNotebookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body">是否确认删除笔记：<code id="delete_notebookTitle"></code>?</div>
-                        <p class="hidden" id="delete_notebookID"></p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="deleteNotebook()">删除</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
-            </div>
+            </div><!-- /.modal -->
+
 
         </section>
     </section>
@@ -407,95 +402,14 @@
 </script>
 
 <script>
-    function right(id,title) {
-        var e=window.event;
-        if(e.button=="2"){
-            document.getElementById("delete_id").innerText = id;
-            document.getElementById("delete_title").innerText = title;
 
-        }
-    }
-
-    function setDataToDialog(userID,username,email,telephone,privilege){
-        $('#userID').val(userID);
-        $("#username").val(username);
-        $("#email").val(email);
-        $("#telephone").val(telephone);
-        $("#privilege").val(privilege);
-    }
-
-    function setDataToDeleteDialog(userID,username){
-        document.getElementById("delete_userID").innerText =userID;
-        document.getElementById("delete_username").innerText =username;
-    }
-
-    function setDataToDeleteNotebookDialog(){
-        document.getElementById("delete_notebookID").innerText = document.getElementById("delete_id").innerText;
-        document.getElementById("delete_notebookTitle").innerText = document.getElementById("delete_title").innerText;
-    }
-
-
-    function modifyUser(){
-        var userID = document.getElementById("userID").value;
-        var username = document.getElementById("username").value;
-        var email = document.getElementById("email").value;
-        var phoneNumber = document.getElementById("telephone").value;
-        var privilege = document.getElementById("privilege").value;
-
+    function showSearchResult(){
+        var username=document.getElementById("search_username").value;
         $.ajax({
-            data: {userID: userID, username: username, email: email, phoneNumber: phoneNumber, privilege: privilege},
-            url: "/userManage/modifyUser",
-            dataType: 'json',
-//                        async: false,
-            contentType: 'application/json;charset=UTF-8',
-            cache: false,
-            timeout: 0,
-            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
-            headers: {
-                'Access-Control-Allow-Origin': '*'
+            data: {
+                username: username
             },
-            success: function () {
-                alert("修改成功！");
-                window.location.reload();
-            },
-            error: function () {
-                alert("修改失败！");
-            }
-        });
-    }
-
-    function deleteUser() {
-        var userID = document.getElementById("delete_userID").innerText;
-        $.ajax({
-            data: {userID: userID},
-            url: "/userManage/deleteUser",
-            dataType: 'json',
-//                        async: false,
-            contentType: 'application/json;charset=UTF-8',
-            cache: false,
-            timeout: 0,
-            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            },
-            success: function () {
-                alert("删除成功！");
-                window.location.reload();
-            },
-            error: function () {
-                alert("删除失败！");
-            }
-        });
-
-
-    }
-
-    function deleteNotebook(){
-        var notebookID = document.getElementById("delete_notebookID").innerText;
-
-        $.ajax({
-            data: {notebookID: notebookID},
-            url: "/index/deleteNotebook",
+            url: "/friends/searchUser",
             dataType: 'json',
 //                        async: false,
             contentType: 'application/json;charset=UTF-8',
@@ -506,14 +420,107 @@
                 'Access-Control-Allow-Origin': '*'
             },
             success: function (data) {
-                alert("删除成功！");
-                window.location.reload();
+                var result = JSON.parse(JSON.stringify(data));
+                if(result.message=='success'){
+                   if(result.data!=null){
+                       document.getElementById("searchResult_userID").innerText = result.data.userID;
+                       document.getElementById("searchResult_username").innerText = result.data.username;
+                       document.getElementById("searchResult_email").innerText = result.data.email;
+                       document.getElementById("searchResult_phoneNumber").innerText = result.data.phoneNumber;
+                       $("#searchResultModal").modal('show');
+                   }else {
+                       alert("该用户不存在！");
+                   }
+                }
             },
             error: function () {
-                alert("删除成功！");
-                window.location.reload();
+                alert("搜索用户失败！请刷新重试");
             }
         });
+
+    }
+
+    function addUser(){
+        var username=document.getElementById("searchResult_username").innerText;
+
+        if(username=="<%=user.username%>"){
+            alert("为什么要添加自己为好友呢？")
+            return;
+        }
+        var userID = document.getElementById("searchResult_userID").innerText;
+        var email = document.getElementById("searchResult_email").innerText;
+        var phoneNumber = document.getElementById("searchResult_phoneNumber").innerText;
+        $.ajax({
+            data: {
+                userID:userID,
+                username: username,
+                email:email,
+                phoneNumber:phoneNumber
+            },
+            url: "/friends/addFriend",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if(result.message=='success'){
+                    alert("添加好友成功！")
+                    window.location.reload();
+                }
+            },
+            error: function () {
+                alert("添加好友失败！");
+            }
+        });
+
+    }
+
+    function showDeleteFriendDialog(friendID,username){
+        $('#deleteFriendModal').modal('show');
+        document.getElementById("delete_userID").innerText = friendID;
+        document.getElementById("delete_username").innerText = username;
+    }
+
+    function deleteFriend(){
+        var friendID = document.getElementById("delete_userID").innerText;
+        $.ajax({
+            data: {
+                userID:"<%=user.userID%>",
+                friendID: friendID
+            },
+            url: "/friends/deleteFriend",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if(result.message=='success'){
+                    alert("删除好友成功！")
+                    window.location.reload();
+                }
+            },
+            error: function () {
+                alert("删除好友失败！");
+            }
+        });
+
+    }
+
+    function keyListener(){
+        if (event.keyCode==13)  //回车键的键值为13
+            showSearchResult();
     }
 
     function getCookieValue(key) {

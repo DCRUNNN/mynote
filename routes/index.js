@@ -9,6 +9,8 @@ var User = sequelize.import("../models/user");
 var Notebook = sequelize.import('../models/notebook');
 var Page = sequelize.import('../models/page');
 var Tag = sequelize.import('../models/tag');
+var Friends = sequelize.import('../models/friends');
+var SharedPage = sequelize.import('../models/sharedPage');
 
 var page = [];
 var currentNotebook = [];
@@ -166,15 +168,113 @@ router.get('/tagManage', function (request, response, next) {
                 var pageTagResultForTag=JSON.stringify(message3);
                 response.cookie('pageResultForTag', JSON.parse(pageTagResultForTag));
 
-                response.render('tagManage', { title: 'My Note', user: request.cookies.user, note:request.cookies.notebook,notebookTags:JSON.parse(notebookTagResult),pageTags:JSON.parse(pageTagResult),allPages:JSON.parse(pageTagResultForTag) });
+                Notebook.findAll({
+                    where:{
+                        userID:request.cookies.user.userID
+                    }
+                }).then(function(message){
+                    var notebookResult=JSON.stringify(message);
+                    // console.log(notebookResult)
 
+                    response.cookie('notebook', JSON.parse(notebookResult));
+                    response.render('tagManage', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),notebookTags:JSON.parse(notebookTagResult),pageTags:JSON.parse(pageTagResult),allPages:JSON.parse(pageTagResultForTag) });
+
+                });
             });
+        });
+    });
+});
+
+router.get('/myInfo', function (request, response, next) {
+    response.render('myInfo', { title: 'My Note', user: request.cookies.user, note:request.cookies.notebook });
+});
+
+
+router.get('/myFriends', function (request, response, next) {
+
+    Friends.findAll({
+        where:{
+            userID:request.cookies.user.userID
+        }
+    }).then(function(message){
+        var friendsResult=JSON.stringify(message);
+        response.cookie('friends', JSON.parse(friendsResult));
+        console.log(JSON.parse(friendsResult));
+        response.render('friends', { title: 'My Note', user: request.cookies.user, note:request.cookies.notebook,allFriends:JSON.parse(friendsResult) });
+
+    });
+
+});
+
+router.get('/getAllFriends', function (request, response, next) {
+
+    Friends.findAll({
+        where:{
+            userID:request.cookies.user.userID
+        }
+    }).then(function(message){
+        var friendsResult=JSON.stringify(message);
+        response.cookie('friends', JSON.parse(friendsResult));
+        return response.json({
+            message:'success',
+            data:JSON.parse(friendsResult)
+        });
+
+    });
+
+});
+
+router.get('/sharePage', function (request, response, next) {
+
+    var userList=request.query.userList;
+
+    for(var i=0;i<userList.length;i++){
+        var sharedPage = {
+            sharedID: "",
+            fromUserID: request.cookies.user.userID,
+            fromUsername: request.cookies.user.username,
+            toUserID: userList[i].friendID,
+            toUsername: userList[i].friendUsername,
+            title: request.query.title,
+            content: request.query.content,
+            privilege: request.query.privilege,
+            pageID: request.query.pageID
+        };
+        SharedPage.create(sharedPage).then(function(msg){});
+    }
+
+    return response.json({
+        message:"success"
+    })
+
+});
+
+router.get('/sharedPage', function (request, response, next) {
+
+    SharedPage.findAll({
+        where:{
+            toUserID: request.cookies.user.userID
+        }
+    }).then(function(message){
+        var toMeSharedPageResult=JSON.stringify(message);
+        response.cookie('toMeSharedPage', JSON.parse(toMeSharedPageResult));
+
+        SharedPage.findAll({
+            where:{
+                fromUserID: request.cookies.user.userID
+            }
+        }).then(function(message){
+            var fromMeSharedPageResult=JSON.stringify(message);
+            response.cookie('fromMeSharedPage', JSON.parse(fromMeSharedPageResult));
+
+            response.render('sharedPage', { title: 'My Note', user: request.cookies.user, note:request.cookies.notebook,toMeSharedPage:JSON.parse(toMeSharedPageResult),fromMeSharedPage:JSON.parse(fromMeSharedPageResult) });
 
         });
 
     });
 
 });
+
 
 router.get('/getAllPageTags', function (request, response, next) {
 
@@ -407,7 +507,6 @@ router.get('/deletePage', function(request, response, next) {
 
 });
 
-
 router.get('/updatePage',function (request,response,next) {
     var content = request.query.content;
     var notebookID = request.cookies.currentNotebook.notebookID;
@@ -447,10 +546,7 @@ router.get('/updatePage',function (request,response,next) {
         //     message: 'success'
         // })
     })
-
-
 })
-
 
 router.get('/showPageMenu/:notebookID', function (request, response,next) {
     var notebookID = request.params.notebookID;
@@ -503,6 +599,30 @@ router.get('/showPageContent/:pageID', function (request, response,next) {
 });
 
 
+router.get('/uploader', function(req, res) {
+
+    console.log("sjfklsdjfsdklfjsdlkfj!!!")
+    var fs = require('fs');
+
+    fs.readFile(req.files.upload.path, function (err, data) {
+        var newPath = __dirname + '/../public/uploads/' + req.files.upload.name;
+        fs.writeFile(newPath, data, function (err) {
+            if (err) console.log({err: err});
+            else {
+                html = "";
+                html += "<script type='text/javascript'>";
+                html += "    var funcNum = " + req.query.CKEditorFuncNum + ";";
+                html += "    var url     = \"/uploads/" + req.files.upload.name + "\";";
+                html += "    var message = \"Uploaded file successfully\";";
+                html += "";
+                html += "    window.parent.CKEDITOR.tools.callFunction(funcNum, url, message);";
+                html += "</script>";
+
+                res.send(html);
+            }
+        });
+    });
+});
 
 
 

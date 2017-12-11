@@ -8,15 +8,17 @@ var session = require('express-session');
 
 
 var routes = require('./routes/index');
-var userManage = require('./routes/userManage');
 var login = require('./routes/login');
 var signUp = require('./routes/signUp');
 var notebook = require('./routes/notebook');
 var tagManage = require('./routes/tagManage');
+var userManage = require('./routes/userManage');
+var friends = require('./routes/friends');
+var sharedPage = require('./routes/sharedPage');
+var myInfo = require('./routes/myInfo');
 
 var databaseHelper = require('./routes/database');
 var app = express();
-
 
 
 // view engine setup
@@ -32,11 +34,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', login);
-app.use('/userManage', userManage);
 app.use('/index', routes);
 app.use('/signUp', login);
 app.use('/notebook', notebook);
 app.use('/tagManage', tagManage);
+app.use('/userManage', userManage);
+app.use('/friends', friends);
+app.use('/sharedPage', sharedPage);
+app.use('/myInfo', myInfo);
+
 
 // app.use('home', routes);
 

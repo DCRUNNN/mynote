@@ -63,7 +63,6 @@
 }
 
 .tasks-widget .task-list  li.task-done .task-title-sp  {
-  text-decoration:line-through;
   color: #bbbbbb;
 }
 

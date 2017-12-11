@@ -1924,7 +1924,7 @@ ul.inbox-pagination li {
 /*profile*/
 
 .profile-nav .user-heading {
-    background: #ff766c;
+    background: #58C9F3;
     color: #fff;
     border-radius: 4px 4px 0 0;
     -webkit-border-radius: 4px 4px 0 0;
@@ -1963,7 +1963,7 @@ ul.inbox-pagination li {
 .profile-nav ul > li {
     border-bottom: 1px solid #ebeae6;
     margin-top: 0;
-    line-height: 30px;
+    line-height: 20px;
 }
 
 .profile-nav ul > li:last-child {
