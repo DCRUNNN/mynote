@@ -42,7 +42,7 @@
 
 <section id="container" >
   <!--header start-->
-  <header class="header white-bg">
+  <header class="header white-bg" id="header">
 
     <div class="sidebar-toggle-box">
       <div data-original-title="Toggle Navigation" data-placement="right" class="fa fa-reorder icon-reorder tooltips"></div>
@@ -103,7 +103,11 @@
       <!--search & user info start-->
       <ul class="nav pull-right top-menu">
         <li>
-          <input type="text" class="form-control search" placeholder="Search">
+            <input type="text" class="form-control search" id="mySearchBT" placeholder="Search" >
+        </li>
+        <li>
+          <button type="button" class="btn btn-sm btn-primary" onclick="mySearch()">搜索</button>
+
         </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
@@ -275,6 +279,8 @@
                       <button type="button" class="btn btn-primary" id="sharePageBT" style="display:none" onclick="showFriendList()">Share</button>
                       <button type="button" class="btn btn-primary" id="updateNoteBT" style="display: none">Update</button>
                       <button type="button" class="btn btn-primary" id="downloadToPdfBT" style="display: none" onclick="exportPDF()" >Print To PDF</button>
+                      <button type="button" class="btn btn-primary" id="captureBT" style="display: none"  onclick="captureScreen()">截屏</button>
+
                       <button type="button" class="btn btn-primary" id="showMenuBT" data-toggle="modal" href="#backWarningModal" style="display: none">Return</button>
                     </form>
                   </div>
@@ -305,7 +311,6 @@
 
                         <div class="btn-group">
                           <button class="btn btn-success" id="savePageBT" onclick="savePage('<%=pageContent.pageID%>')">保存</button>
-                          <button id="calcelSavePageBT" class="btn btn-default" >截屏</button>
                         </div>
                       </div>
                     </div>
@@ -567,6 +572,38 @@
                 </div><!-- /.modal-dialog -->
               </div>
 
+              <div class="modal fade" id="mySearchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title">搜索结果</h4>
+                    </div>
+                    <div class="modal-body">
+                      <table class="table"  style="text-align:center">
+                        <thead>
+                        <tr>
+                          <th style="text-align:center">ID</th>
+                          <th style="text-align:center">Title</th>
+                          <th style="text-align:center">Tag</th>
+                          <th style="text-align:center">类型</th>
+                        </tr>
+                        </thead>
+                        <tbody id="mySearchContent">
+                        <tr class="">
+                        </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">好的</button>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div>
+
+
               <div class="clearfix">&nbsp;</div>
             </div>
           </section>
@@ -614,7 +651,6 @@
             paginationSpeed : 400,
             singleItem : true,
             autoPlay:true
-
         });
     });
 
@@ -640,6 +676,7 @@
         $("#updateNoteBT").hide();
         $('#downloadToPdfBT').hide();
         $('#sharePageBT').hide();
+        $('#captureBT').hide();
         $("#showMenuBT").show();
     });
 
@@ -739,12 +776,19 @@
       var temp3 = temp2[0].split('"%3A"');
       var title = temp3[1];
 
+      var cookie = getCookieValue("pageContent");
+      var t1 = cookie.split('"pageID"');
+      var t2 = t1[1].split('%2C');
+      var t3 = t2[0].split('%3A');
+      var pageID = t3[1];
+
       $.ajax({
           data: {
               content: CKEDITOR.instances.editor1.getData(),
               title: title,
               newTitle: document.getElementById("newPageTitle").value,
-              notebookID: notebookID
+              notebookID: notebookID,
+              pageID:pageID
           },
           url: "/index/updatePage",
           dataType: 'json',
@@ -812,6 +856,7 @@
                   $("#sharePageBT").show();
                   $('#downloadToPdfBT').show();
                   $("#updateNoteBT").show();
+                  $('#captureBT').show();
                   $('#showMenuBT').hide();
               }else{
                   alert("显示笔记失败！请刷新重试！");
@@ -832,6 +877,7 @@
       $("#showMenuBT").hide();
       $("#showMenuBT2").hide();
       $('#downloadToPdfBT').show();
+      $('#captureBT').show();
       $('#sharePageBT').show();
       $("#updateNoteBT").show();
       $("#notePanel").slideDown("slow");
@@ -1166,6 +1212,70 @@
               alert("分享成功！可以到好友圈的分享笔记中查看！");
               $('#friendListModal').modal('hide');
 
+          },
+          error: function () {
+              alert("分享失败，请刷新重试！");
+          }
+      });
+
+
+  }
+
+  function captureScreen(){
+      var link = document.createElement('a');
+      html2canvas(document.body,{
+          onrendered:function(canvas){
+              link.href=canvas.toDataURL();
+              link.download = '截图.png';
+              link.click();
+          }
+      })
+  }
+
+  function mySearch(){
+      var input = $('#mySearchBT').val();
+
+      $.ajax({
+          data: {input:input},
+          url: "/index/mySearch",
+          dataType: 'json',
+//                        async: false,
+          contentType: 'application/json;charset=UTF-8',
+          cache: false,
+          timeout: 0,
+          type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+          headers: {
+              'Access-Control-Allow-Origin': '*'
+          },
+          success: function (data) {
+              var result = JSON.parse(JSON.stringify(data));
+
+              var data1 = result.notebookData;
+              var data2 = result.pageData;
+
+              $("#mySearchContent").empty();
+
+              for(var i=0;i<data1.length;i++) {
+                  $("#mySearchContent").append(
+                      "<tr><td>"+data1[i].notebookID+
+                      "</td><td>"+data1[i].title+
+                      "</td><td>"+data1[i].tag+
+                      "</td><td>"+"笔记本"+
+                      "</td><tr>"
+                  )
+              }
+
+              for(var i=0;i<data2.length;i++) {
+                  $("#mySearchContent").append(
+                      "<tr><td>"+data2[i].pageID+
+                      "</td><td>"+data2[i].title+
+                      "</td><td>"+data2[i].tag+
+                      "</td><td>"+"笔记"+
+                      "</td><tr>"
+                  )
+              }
+
+              $('#mySearchModal').modal('show');
           },
           error: function () {
               alert("分享失败，请刷新重试！");

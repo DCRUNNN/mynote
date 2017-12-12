@@ -468,9 +468,6 @@ router.get('/addPage',function (request,response,next) {
         });
     });
 
-
-
-
 })
 
 router.get('/deletePage', function(request, response, next) {
@@ -512,6 +509,7 @@ router.get('/updatePage',function (request,response,next) {
     var notebookID = request.cookies.currentNotebook.notebookID;
     var title = request.query.title;
     var newTitle = request.query.newTitle;
+    var pageID = request.query.pageID;
 
     var page = {
         content: content,
@@ -532,9 +530,18 @@ router.get('/updatePage',function (request,response,next) {
         // var pageResult = JSON.stringify(message);
         var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
         if(success==true) {
-            return response.json({
-                message: 'success',page:JSON.parse(JSON.stringify(page))
-            })
+            SharedPage.update({
+                content: content,
+                title: title
+            }, {
+                where: {
+                    pageID: pageID,
+                }
+            }).then(function (message) {
+                return response.json({
+                    message: 'success',page:JSON.parse(JSON.stringify(page))
+                })
+            });
         }else{
             return response.json({
                 message: 'error',page:JSON.parse(JSON.stringify(page))
@@ -598,6 +605,34 @@ router.get('/showPageContent/:pageID', function (request, response,next) {
     });
 });
 
+router.get('/mySearch',function (request,response,next) {
+    var input = request.query.input;
+
+    Notebook.findAll({
+        where:{
+            title: {
+                $like: "%"+input+"%"
+            }
+        }
+    }).then(function(message){
+        var result1=JSON.stringify(message);
+        Page.findAll({
+            where:{
+                title: {
+                    $like: "%"+input+"%"
+                }
+            }
+        }).then(function(message2){
+            var result2=JSON.stringify(message2);
+            return response.json({
+                message: 'success',
+                notebookData: JSON.parse(result1),
+                pageData:JSON.parse(result2)
+            });
+        });
+    });
+
+})
 
 router.get('/uploader', function(req, res) {
 

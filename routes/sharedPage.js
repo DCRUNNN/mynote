@@ -141,5 +141,52 @@ router.get('/modifyPrivilege', function(request, response, next) {
 
 });
 
+router.get('/addThumbsUp', function(request, response, next) {
+
+    SharedPage.findOne({
+        where:{
+            sharedID:request.query.sharedID,
+        }
+    }).then(function(message){
+        var pageResult=JSON.stringify(message);
+        var result = JSON.parse(pageResult);
+        if(result.thumbs==1){
+            return response.json({
+                message: 'error',
+                data: "您已经点过赞啦！"
+            });
+        }else{
+            SharedPage.update({
+                thumbs: 1
+            }, {
+                where: {
+                    sharedID: request.query.sharedID,
+                }
+            }).then(function (message) {
+                // var pageResult = JSON.stringify(message);
+                var success = message[0] != "0"; //message[0]是影响的行数，为0则修改失败，否则成功
+                if (success == true) {
+                    return response.json({
+                        message: 'success'
+                    })
+                } else {
+                    return response.json({
+                        message: 'error'
+                    })
+                }
+                // response.cookie('pageMenu', JSON.parse(pageResult));
+                // // response.render('index', { title: 'My Note', user: request.cookies.user, note:JSON.parse(notebookResult),pageMenu:request.cookies.pageMenu,pageContent:request.cookies.pageContent });
+                // return response.json({
+                //     message: 'success'
+                // })
+            });
+
+        }
+
+    });
+
+
+});
+
 
 module.exports = router;

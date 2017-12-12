@@ -258,7 +258,7 @@
                                         <td><%=page1.title%></td>
                                         <td><%=page1.privilege%></td>
                                         <td><%=page1.fromUsername%></td>
-                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page1.sharedID%>')"><i class="fa fa-edit">查看</i></button></td>
+                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page1.sharedID%>');"><i class="fa fa-edit">查看</i></button></td>
                                         <td><button class="btn btn-warning" onclick="setDataToDeletePageDialog('<%=page1.sharedID%>','<%=page1.title%>')"><i class="fa fa-close" >删除</i></button></td>
                                     </tr>
                                     <%})%>
@@ -289,7 +289,7 @@
                                         <td><%=page2.title%></td>
                                         <td><%=page2.privilege%></td>
                                         <td><%=page2.toUsername%></td>
-                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page2.sharedID%>')"><i class="fa fa-edit">查看</i></button></td>
+                                        <td><button class="btn btn-default" onclick="showPageContent('<%=page2.sharedID%>');$('#thumbsUpBT').hide();"><i class="fa fa-edit">查看</i></button></td>
                                         <td><button class="btn btn-default" onclick="showModifyPrivilegeModal('<%=page2.sharedID%>')"><i class="fa fa-edit">修改</i></button></td>
                                         <td><button class="btn btn-warning" onclick="setDataToDeletePageDialog('<%=page2.sharedID%>','<%=page2.title%>')"><i class="fa fa-close" >删除</i></button></td>
                                     </tr>
@@ -328,7 +328,9 @@
                 <div class="panel-footer">
                     <button type="button" class="btn btn-sm btn-primary" onclick="backToMainContent()">返回</button>
                     <button type="button" class="btn btn-sm btn-primary" id="modify_share_pageBT" style="display: none" onclick="showModifyPagePanel()">修改</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="captureBT"  onclick="captureScreen()">截屏</button>
                     <button id="exportToPDFBT" class="btn btn-sm btn-primary" onclick="exportPDF()">导出</button>
+                    <button id="thumbsUpBT" class="btn btn-sm btn-primary" onclick="thumbsUp()">点赞</button>
                 </div>
 
             </section>
@@ -349,7 +351,6 @@
 
                         <div class="btn-group">
                             <button class="btn btn-success" id="savePageBT" onclick="savePage()">保存</button>
-                            <button id="calcelSavePageBT" class="btn btn-default" >截屏</button>
                             <button id="backBT" class="btn btn-default" data-toggle="modal" href="#backWarningModal">返回</button>
                         </div>
                     </div>
@@ -491,6 +492,7 @@
             $('#showContentPanel').slideUp('slow');
             $('#writeNotePanel').slideUp('slow');
             $('#mainPanel').slideDown('slow');
+            $('#thumbsUpBT').show();
         }
     }
 
@@ -690,6 +692,45 @@
         $('#writeNotePanel').slideUp('slow');
         $('#showContentPanel').slideDown('slow');
         $('#backWarningModal').modal('hide');
+    }
+
+    function captureScreen(){
+        var link = document.createElement('a');
+        html2canvas(document.body,{
+            onrendered:function(canvas){
+                link.href=canvas.toDataURL();
+                link.download = '截图.png';
+                link.click();
+            }
+        })
+    }
+
+    function thumbsUp(){
+        var sharedID = document.getElementById("getShareID").innerText;
+        $.ajax({
+            data: {sharedID:sharedID},
+            url: "/sharedPage/addThumbsUp",
+            dataType: 'json',
+//                        async: false,
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            timeout: 0,
+            type: 'get',    // 如果要使用GET方式，则将此处改为'get'
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            success: function (data) {
+                var result = JSON.parse(JSON.stringify(data));
+                if (result.message == 'success') {
+                    alert("点赞成功！");
+                } else {
+                    alert(result.data);
+                }
+            },
+            error: function () {
+                alert("点赞失败");
+            }
+        });
     }
 
 </script>

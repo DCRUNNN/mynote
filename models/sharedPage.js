@@ -43,6 +43,10 @@ module.exports = function(sequelize, DataTypes) {
         pageID: {
             type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        thumbs: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         }
     },{
         freezeTableName: true,
